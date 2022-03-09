@@ -7,18 +7,18 @@ import org.bouncycastle.x509.extension.SubjectKeyIdentifierStructure;
 
 import javax.crypto.Cipher;
 import javax.security.auth.x500.X500Principal;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
+import java.io.*;
 import java.math.BigInteger;
+import java.nio.charset.Charset;
+import java.nio.file.Files;
 import java.security.*;
+import java.security.cert.*;
 import java.security.cert.Certificate;
-import java.security.cert.CertificateEncodingException;
-import java.security.cert.CertificateParsingException;
-import java.security.cert.X509Certificate;
-import java.util.ArrayList;
-import java.util.Base64;
-import java.util.Date;
+import java.security.spec.InvalidKeySpecException;
+import java.security.spec.PKCS8EncodedKeySpec;
+import java.util.*;
+
+import org.apache.commons.codec.binary.Base64;
 
 public class Cryptography {
     //класс для работы с крипктографией, здесь генерируются ключи,
@@ -32,51 +32,79 @@ public class Cryptography {
      * @version 1
      */
 
-    private static void generatePair(String alias) {
+    private static void generatePair(Task task) {
         // generate pair keys
         try {
             KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance("RSA");
             keyPairGenerator.initialize(2048);
             KeyPair pair = keyPairGenerator.generateKeyPair();
-
-            String enc = encrypt(pair.getPublic(), "Chmonua");
-            System.out.println(enc);
-
-            String dec = decrypt(pair.getPrivate(), enc);
-
-            System.out.println(dec);
-//            System.out.println("Private key - " + pair.getPrivate());
-//            System.out.println("Public key - " + pair.getPublic());
-//            System.out.println(generateCrt(generateX509Certificate(pair)));
-//            String crt = generateCrt(generateX509Certificate(pair));
-//            FileOutputStream outputStream = new FileOutputStream("crt.crt");
-//            byte[] strToBytes = crt.getBytes();
-//            outputStream.write(strToBytes);
-//            outputStream.close();
-
-            //generateX509Certificate(pair);
+            String crt = generateCrt(generateX509Certificate(pair, task));
+            writeCrtToFile(Path.PATH_CERT + task.getId() + ".crt", crt);
+            String key = generatePrivateKeyPEM(new String(Base64.encodeBase64(pair.getPrivate().getEncoded())));
+            savePrivateKey(key, Path.PATH_PRIVATE_KEYS + task.getId() + ".pem");
         } catch (NoSuchAlgorithmException e) {
-
+            e.printStackTrace();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
     }
 
+    private static void writeCrtToFile(String path, String crt) throws IOException {
+        FileOutputStream outputStream = new FileOutputStream(path);
+        byte[] strToBytes = crt.getBytes();
+        outputStream.write(strToBytes);
+        outputStream.close();
+    }
 
-    private static String generateX509Certificate(KeyPair keyPair) {
+    private static void savePrivateKey(String key, String path) throws IOException {
+        FileOutputStream outputStream = new FileOutputStream(path);
+        byte[] strToBytes = key.getBytes();
+        outputStream.write(strToBytes);
+        outputStream.close();
+    }
+
+    private static PrivateKey readPrivateKey(File file) throws Exception {
+        String key = new String(Files.readAllBytes(file.toPath()), Charset.defaultCharset());
+
+        String privateKeyPEM = key
+                .replace("-----BEGIN PRIVATE KEY-----", "")
+                .replaceAll(System.lineSeparator(), "")
+                .replace("-----END PRIVATE KEY-----", "");
+        System.out.println(privateKeyPEM);
+        byte[] encoded = Base64.decodeBase64(privateKeyPEM);
+
+        KeyFactory keyFactory = null;
+        try {
+            keyFactory = KeyFactory.getInstance("RSA");
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        }
+        PKCS8EncodedKeySpec keySpec = new PKCS8EncodedKeySpec(encoded);
+        return keyFactory.generatePrivate(keySpec);
+
+
+    }
+
+    private static String generateX509Certificate(KeyPair keyPair, Task task) {
         // generate certificat
         //генериуем создатель сертификатов
-
+        Calendar start = new GregorianCalendar();
+        Calendar end = new GregorianCalendar();
+        end.add(Calendar.YEAR, 30);
         X509V3CertificateGenerator certificateGenerator = new X509V3CertificateGenerator();
-        X500Principal serverSubjectName = new X500Principal("CN=Name");
-        certificateGenerator.setSerialNumber(new BigInteger("123456789"));
-// X509Certificate caCert=null;
-        certificateGenerator.setIssuerDN(new X509Principal("CN=localhost"));
-        certificateGenerator.setNotBefore(new Date());
-        certificateGenerator.setNotAfter(new Date());
-        certificateGenerator.setSubjectDN(new X509Principal("CN=localhost"));
+        X500Principal serverSubjectName = new X500Principal("CN=" + task.getId());
+        certificateGenerator.setSerialNumber(BigInteger.valueOf(Math.abs(task.getId().hashCode())));
+        certificateGenerator.setIssuerDN(new X509Principal("CN=" + task.getId()));
+        certificateGenerator.setNotBefore(start.getTime());
+        certificateGenerator.setNotAfter(end.getTime());
+        certificateGenerator.setSubjectDN(new X509Principal("CN=" + task.getId()));
         certificateGenerator.setPublicKey(keyPair.getPublic());
-        certificateGenerator.setSignatureAlgorithm("MD5WithRSA");
+        certificateGenerator.setSignatureAlgorithm("sha1WithRSA");
         try {
             certificateGenerator.addExtension(X509Extensions.SubjectKeyIdentifier, false,
                     new SubjectKeyIdentifierStructure(keyPair.getPublic()));
@@ -95,59 +123,61 @@ public class Cryptography {
         } catch (InvalidKeyException e) {
             e.printStackTrace();
         }
-
-        //System.out.println( Base64.encodeToString(x509Certificate.getEncoded());
-        final Base64.Encoder encoder = Base64.getMimeEncoder(64, LINE_SEPARATOR.getBytes());
+        final java.util.Base64.Encoder encoder = java.util.Base64.getMimeEncoder(64, LINE_SEPARATOR.getBytes());
         byte[] rawCrtText = null;
         try {
             rawCrtText = x509Certificate.getEncoded();
         } catch (CertificateEncodingException e) {
             e.printStackTrace();
         }
-        String encodedCertText = new String(encoder.encode(rawCrtText));
-        System.out.println(encodedCertText);
-        return encodedCertText;
+        return new String(encoder.encode(rawCrtText));
     }
-
 
     private static String generateCrt(String cert) {
         String crt = "-----BEGIN CERTIFICATE-----" + "\n" + cert + "\n-----END CERTIFICATE-----";
         return crt;
     }
 
-    public static String encrypt(PublicKey publicKey, String plaintext) {
+    private static String generatePrivateKeyPEM(String key) {
+        String crt = "-----BEGIN PRIVATE KEY-----" + "\n" + key + "\n-----END PRIVATE KEY-----";
+        return crt;
+    }
+
+    public static String encrypt(PublicKey publicKey, String plaintext, Task task) {
         try {
-            // отправить серверу, где тот его зашифрует
-            Cipher cipher = Cipher.getInstance("RSA/ECB/PKCS1Padding");
+            Cipher cipher = Cipher.getInstance(task.getProvider());
             cipher.init(Cipher.ENCRYPT_MODE, publicKey);
-            return Base64.getEncoder().encodeToString(cipher.doFinal(plaintext.getBytes()));
+            return Base64.encodeBase64String(cipher.doFinal(plaintext.getBytes()));
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
-
     }
 
-    public static String decrypt(PrivateKey privateKey, String plaintext) {
+    public static String decrypt(PrivateKey privateKey, String plaintext, Task task) {
         try {
-            Cipher cipher = Cipher.getInstance("RSA/ECB/PKCS1Padding");
+            Cipher cipher = Cipher.getInstance(task.getProvider());
             cipher.init(Cipher.DECRYPT_MODE, privateKey);
-            return new String(cipher.doFinal(Base64.getDecoder().decode(plaintext)), "UTF-8");
+            return new String(cipher.doFinal(Base64.decodeBase64(plaintext)), "UTF-8");
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
 
     }
 
-    public static void main(String[] args) {
-        Provider[] list = Security.getProviders();
-        for (Provider x : list) {
-            System.out.println(x.getInfo());
+    private static Certificate getCert(InputStream inputStream) {
+        CertificateFactory cf = null;
+        Certificate cert = null;
+        try {
+            cf = CertificateFactory.getInstance("X.509");
+            cert = cf.generateCertificate(inputStream);
+        } catch (CertificateException e) {
+            e.printStackTrace();
         }
-        //System.out.println(Security.getProviders().toString());
-        System.out.println("Alkl");
-        generatePair("hwr");
+        return cert;
+    }
 
-
-
+    public static void main(String[] args) throws FileNotFoundException {
+        Generator.initialization();
+        generatePair(Generator.generatetask());
     }
 }
