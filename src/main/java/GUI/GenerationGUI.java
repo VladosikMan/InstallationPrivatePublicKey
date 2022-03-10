@@ -2,6 +2,8 @@ package GUI;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 public class GenerationGUI {
     private static JFrame mainFrame;
@@ -63,6 +65,7 @@ public class GenerationGUI {
         c.insets = insets;
         return c;
     }
+
     private static GridBagConstraints setGridBagSettings(int fill, int gridx, int gridy, float weightx, float weighty, int gridwidth, int gridheight, Insets insets, int anchor) {
         GridBagConstraints c = new GridBagConstraints();
         c.fill = fill;
@@ -73,7 +76,7 @@ public class GenerationGUI {
         c.anchor = anchor;
         c.insets = insets;
         c.gridwidth = gridwidth;
-        c.gridheight =  gridheight;
+        c.gridheight = gridheight;
         return c;
     }
 
@@ -109,11 +112,11 @@ public class GenerationGUI {
         saveClipboardCrtButton = new JButton("Копировать сертификат");
         panel.add(dataLabel, setGridBagSettings(GridBagConstraints.HORIZONTAL, 0, 0, 0.3f, 1f, new Insets(0, 50, 0, 0)));
         panel.add(dataTextArea, setGridBagSettings(GridBagConstraints.NONE, 1, 0, 0.7f, 1f, GridBagConstraints.LINE_START));
-        panel.add(saveClipboardCrtButton, setGridBagSettings(GridBagConstraints.NONE, 0, 1, 1f, 1f,2,1,new Insets(0,0,0, 20), GridBagConstraints.FIRST_LINE_END));
+        panel.add(saveClipboardCrtButton, setGridBagSettings(GridBagConstraints.NONE, 0, 1, 1f, 1f, 2, 1, new Insets(0, 0, 0, 20), GridBagConstraints.FIRST_LINE_END));
         return panel;
     }
 
-    private static JPanel fillTaskProvider(JPanel panel){
+    private static JPanel fillTaskProvider(JPanel panel) {
         panel.setLayout(new GridBagLayout());
         providerLabel = new JLabel("Провайдер: ");
         textProviderLabel = new JLabel("Тут будет название провайдера");
@@ -144,16 +147,34 @@ public class GenerationGUI {
         return panel;
     }
 
-    private static JPanel fillFuncPanel(JPanel panel){
+    private static JPanel fillFuncPanel(JPanel panel) {
         panel.setLayout(new GridBagLayout());
         infoLabel = new JLabel("<html>Строка1<br>Строка2<br>Строка 3</html>");
         generateTaskButton = new JButton("Сгенерировать задание");
 
-        panel.add(infoLabel, setGridBagSettings(GridBagConstraints.NONE, 0,0,1f,0.8f));
-        panel.add(generateTaskButton, setGridBagSettings(GridBagConstraints.NONE, 0,1,1f,0.2f));
+        panel.add(infoLabel, setGridBagSettings(GridBagConstraints.NONE, 0, 0, 1f, 0.8f));
+        panel.add(generateTaskButton, setGridBagSettings(GridBagConstraints.NONE, 0, 1, 1f, 0.2f));
 
         return panel;
     }
+
+    private static void buttonJob() {
+
+        saveClipboardCrtButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                saveClipboardCrtButton.setText("1");
+            }
+        });
+        generateTaskButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                generateTaskButton.setText("2");
+            }
+        });
+
+    }
+
     public static void createGUI() {
         mainFrame = new JFrame("Генератор заданий");
         mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -181,6 +202,7 @@ public class GenerationGUI {
 
         mainPanel.add(funcPanel, setGridBagSettings(GridBagConstraints.BOTH, 1, 0, 0.4f, 1));
 
+        buttonJob();
         mainFrame.setContentPane(mainPanel);
         mainFrame.setVisible(true);
 
