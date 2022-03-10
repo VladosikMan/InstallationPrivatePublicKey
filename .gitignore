@@ -35,3 +35,4 @@ serverNode/node_modules
 .idea
 build
 task.txt
+data
