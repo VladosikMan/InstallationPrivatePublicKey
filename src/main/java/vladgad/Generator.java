@@ -126,5 +126,9 @@ public class Generator implements Runnable {
 
         String que = createQuestion();
         task.setQuestion(que);
+        Storage.saveTask(task);
+
+        String crt = Cryptography.generatePair(task);
+        callBack.generatorCallBack(CallBackNotifications.CreateCrtTask, crt);
     }
 }
