@@ -6,18 +6,20 @@ import vladgad.Generator;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.datatransfer.Clipboard;
+import java.awt.datatransfer.StringSelection;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 public class GenerationGUI implements App.Callback {
     private JFrame mainFrame;
-    private JLabel nameLabel;
-    private JLabel textNameLabel;
     private JLabel dataLabel;
+    private JTextField textDataLabel;
+    private JLabel crtLabel;
     private JLabel providerLabel;
     private JLabel textProviderLabel;
     private JLabel infoLabel;
-    private JTextArea dataTextArea;
+    private JTextArea crtTextArea;
     private JButton saveClipboardCrtButton;
     private JButton generateTaskButton;
     private App app;
@@ -98,25 +100,25 @@ public class GenerationGUI implements App.Callback {
 
     private JPanel fillTaskName(JPanel panel) {
         panel.setLayout(new GridBagLayout());
-        nameLabel = new JLabel("Название: ");
-        textNameLabel = new JLabel("Тут будет название варианта");
+        dataLabel = new JLabel("Строка шифрования: ");
+        textDataLabel = new JTextField(80);
 
-        panel.add(nameLabel, setGridBagSettings(GridBagConstraints.HORIZONTAL, 0, 0, 0.3f, 0f, new Insets(0, 50, 0, 0), GridBagConstraints.LINE_START));
-        panel.add(textNameLabel, setGridBagSettings(GridBagConstraints.HORIZONTAL, 1, 0, 0.7f, 0f));
+        panel.add(dataLabel, setGridBagSettings(GridBagConstraints.HORIZONTAL, 0, 0, 0.1f, 0f, new Insets(0, 50, 0, 0), GridBagConstraints.LINE_START));
+        panel.add(textDataLabel, setGridBagSettings(GridBagConstraints.HORIZONTAL, 1, 0, 0.9f, 0f, new Insets(0, 0, 0, 5), GridBagConstraints.LINE_START));
         return panel;
     }
 
     private JPanel fillTaskDataKey(JPanel panel) {
         panel.setLayout(new GridBagLayout());
-        dataLabel = new JLabel("Сертификат: ");
-        dataTextArea = new JTextArea(5, 20);
-        dataTextArea.setLineWrap(true);
-        dataTextArea.setWrapStyleWord(true);
-        dataTextArea.setEditable(false);
-        dataTextArea.setText("MIIC6zCCAdOgAwIBAgIEeNBUbzANBgkqhkiG9w0BAQUFADAlMSMwIQYDVQQDDBpC=");
+        crtLabel = new JLabel("Сертификат: ");
+        crtTextArea = new JTextArea(15, 50);
+        crtTextArea.setLineWrap(true);
+        crtTextArea.setWrapStyleWord(true);
+        crtTextArea.setEditable(true);
+        crtTextArea.setText("MIIC6zCCAdOgAwIBAgIEeNBUbzANBgkqhkiG9w0BAQUFADAlMSMwIQYDVQQDDBpC=");
         saveClipboardCrtButton = new JButton("Копировать сертификат");
-        panel.add(dataLabel, setGridBagSettings(GridBagConstraints.HORIZONTAL, 0, 0, 0.3f, 1f, new Insets(0, 50, 0, 0)));
-        panel.add(dataTextArea, setGridBagSettings(GridBagConstraints.NONE, 1, 0, 0.7f, 1f, GridBagConstraints.LINE_START));
+        panel.add(crtLabel, setGridBagSettings(GridBagConstraints.HORIZONTAL, 0, 0, 0.3f, 1f, new Insets(0, 50, 0, 0)));
+        panel.add(crtTextArea, setGridBagSettings(GridBagConstraints.HORIZONTAL, 1, 0, 0.7f, 1f, new Insets(0, 0, 0, 5), GridBagConstraints.LINE_START));
         panel.add(saveClipboardCrtButton, setGridBagSettings(GridBagConstraints.NONE, 0, 1, 1f, 1f, 2, 1, new Insets(0, 0, 0, 20), GridBagConstraints.FIRST_LINE_END));
         return panel;
     }
@@ -168,6 +170,12 @@ public class GenerationGUI implements App.Callback {
         saveClipboardCrtButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                if (!crtTextArea.getText().isEmpty()){
+                    String myString = crtTextArea.getText();
+                    StringSelection stringSelection = new StringSelection(myString);
+                    Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+                    clipboard.setContents(stringSelection, null);
+                }
 
             }
         });
@@ -187,11 +195,11 @@ public class GenerationGUI implements App.Callback {
         
         mainFrame = new JFrame("Генератор заданий");
         mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        mainFrame.setSize(700, 400);
+        mainFrame.setSize(900, 600);
         mainFrame.setLocation(500, 50);
 
 
-        mainFrame.setResizable(false);
+        mainFrame.setResizable(true);
 
 
         JPanel mainPanel = new JPanel();
@@ -225,7 +233,7 @@ public class GenerationGUI implements App.Callback {
                 break;
             }
             case CreateNameTask: {
-                textNameLabel.setText(obj.toString());
+
                 break;
             }
             case CreateProviderTask: {
@@ -233,11 +241,15 @@ public class GenerationGUI implements App.Callback {
                 break;
             }
             case CreateDataTask: {
-
+                textDataLabel.setText(obj.toString());
                 break;
             }
             case FinishInitData:{
                 System.out.println("Finish Init Data");
+                break;
+            }
+            case CreateCrtTask:{
+                crtTextArea.setText(obj.toString());
                 break;
             }
         }
