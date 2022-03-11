@@ -1,11 +1,11 @@
+package vladgad;
+
 import java.io.*;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.List;
-import java.util.Random;
 
-public class Generator implements Runnable{
+public class Generator implements Runnable {
     //class for generation variant task
     // 1 - Id task
     // 2 - Name cert
@@ -14,17 +14,17 @@ public class Generator implements Runnable{
     // 5 - Scheme supllement
     // 6? - Question for check knowledge student
 
-    private static Thread generatorThread;
-    private static ArrayList<Task> tasks = new ArrayList<>();
-    private static ArrayList<String> names = new ArrayList<>();
-    private static ArrayList<String> data = new ArrayList<>();
-    private static ArrayList<String> que = new ArrayList<>();
-    private static ArrayList<String> que2 = new ArrayList<>();
-    private static ArrayList<String> que3 = new ArrayList<>();
-    private static CallBack callBack;
+    private Thread generatorThread;
+    private ArrayList<Task> tasks = new ArrayList<>();
+    private ArrayList<String> names = new ArrayList<>();
+    private ArrayList<String> data = new ArrayList<>();
+    private ArrayList<String> que = new ArrayList<>();
+    private ArrayList<String> que2 = new ArrayList<>();
+    private ArrayList<String> que3 = new ArrayList<>();
+    private CallBack callBack;
 
 
-    interface  CallBack{
+    public interface CallBack {
         void generatorCallBack(CallBackNotifications callBackNotifications, Object obj);
     }
 
@@ -32,25 +32,26 @@ public class Generator implements Runnable{
         this.callBack = callBack;
     }
 
-    public static void initialization() {
-        names = getInformationFromFile(Path.PATH_NAMES);
-        data = getInformationFromFile(Path.PATH_DATA);
-        que = getInformationFromFile(Path.PATH_QUE_1);
-        que2 = getInformationFromFile(Path.PATH_QUE_2);
-        que3 = getInformationFromFile(Path.PATH_QUE_3);
+    public void initialization() {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                names = getInformationFromFile(Path.PATH_NAMES);
+                data = getInformationFromFile(Path.PATH_DATA);
+                que = getInformationFromFile(Path.PATH_QUE_1);
+                que2 = getInformationFromFile(Path.PATH_QUE_2);
+                que3 = getInformationFromFile(Path.PATH_QUE_3);
+                callBack.generatorCallBack(CallBackNotifications.FinishInitData, null);
+            }
+        }).start();
     }
 
-    public static Task generatetask() {
-        Task task = new Task();
-        task.setName(createNameCert());
-        task.setId(createIdTask(task.getName()));
-        task.setDataKey(createKeyData());
-        task.setProvider(createProvide());
-        task.setQuestion(createQuestion());
-        return task;
+    public void generatetask() {
+        generatorThread = new Thread(this);
+        generatorThread.start();
     }
 
-    private static ArrayList<String> getInformationFromFile(String path) {
+    private ArrayList<String> getInformationFromFile(String path) {
 
         ArrayList<String> data = new ArrayList<>();
         try {
@@ -69,27 +70,27 @@ public class Generator implements Runnable{
 
     }
 
-    private static String createIdTask(String name) {
+    private String createIdTask(String name) {
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(Calendar.getInstance().getTime());
         return name + "_" + timeStamp;
     }
 
-    private static String createNameCert() {
+    private String createNameCert() {
         //name from file
         return names.get(0 + (int) (Math.random() * names.size()));
     }
 
-    private static String createKeyData() {
+    private String createKeyData() {
         //data from file
         return data.get(0 + (int) (Math.random() * data.size()));
     }
 
-    private static String createProvide() {
+    private String createProvide() {
         Providers[] providers = Providers.values();
         return providers[0 + (int) (Math.random() * Providers.values().length)].getUrl();
     }
 
-    private static String createQuestion() {
+    private String createQuestion() {
         return que.get(0 + (int) (Math.random() * que.size())) + "\n" + que2.get(0 + (int) (Math.random() * que2.size())) +
                 "\n" + que3.get(0 + (int) (Math.random() * que3.size()));
     }
@@ -102,19 +103,28 @@ public class Generator implements Runnable{
         this.tasks = tasks;
     }
 
-    public static void main(String[] args) throws UnsupportedEncodingException {
-        Generator.initialization();
-        Task task = Generator.generatetask();
-        String que = task.getQuestion();
-        System.out.println(que);
-
-        byte bytes[] = que.getBytes("UTF-8");
-        String value = new String(bytes, "UTF-8");
-        System.out.println(value);
-    }
 
     @Override
     public void run() {
+        Task task = new Task();
+        String name = createNameCert();
+        task.setName(name);
+        System.out.println(name);
+        callBack.generatorCallBack(CallBackNotifications.CreateNameTask, name);
 
+        String id = createIdTask(task.getName());
+        task.setId(createIdTask(id));
+
+        String data = createKeyData();
+        task.setDataKey(data);
+        callBack.generatorCallBack(CallBackNotifications.CreateDataTask, data);
+
+
+        String provider = createProvide();
+        task.setProvider(provider);
+        callBack.generatorCallBack(CallBackNotifications.CreateProviderTask, provider);
+
+        String que = createQuestion();
+        task.setQuestion(que);
     }
 }

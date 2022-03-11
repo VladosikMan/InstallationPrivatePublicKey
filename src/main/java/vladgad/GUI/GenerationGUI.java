@@ -1,34 +1,36 @@
-package GUI;
+package vladgad.GUI;
+
+import vladgad.App;
+import vladgad.CallBackNotifications;
+import vladgad.Generator;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-public class GenerationGUI implements  Generator.C{
-    private static JFrame mainFrame;
-    private static JLabel nameLabel;
-    private static JLabel textNameLabel;
-    private static JLabel dataLabel;
-    private static JLabel providerLabel;
-    private static JLabel textProviderLabel;
-    private static JLabel infoLabel;
-    private static JTextArea dataTextArea;
-    private static JButton saveClipboardCrtButton;
-    private static JButton generateTaskButton;
+public class GenerationGUI implements App.Callback {
+    private JFrame mainFrame;
+    private JLabel nameLabel;
+    private JLabel textNameLabel;
+    private JLabel dataLabel;
+    private JLabel providerLabel;
+    private JLabel textProviderLabel;
+    private JLabel infoLabel;
+    private JTextArea dataTextArea;
+    private JButton saveClipboardCrtButton;
+    private JButton generateTaskButton;
+    private App app;
 
 
-
-
-
-    private static int noZero(int x) {
+    private int noZero(int x) {
         if (x != 0)
             return x;
         else
             return 0;
     }
 
-    private static float noZero(float x) {
+    private float noZero(float x) {
         if (x != 0)
             return x;
         else
@@ -36,7 +38,7 @@ public class GenerationGUI implements  Generator.C{
     }
 
 
-    private static GridBagConstraints setGridBagSettings(int fill, int gridx, int gridy, float weightx, float weighty) {
+    private GridBagConstraints setGridBagSettings(int fill, int gridx, int gridy, float weightx, float weighty) {
         GridBagConstraints c = new GridBagConstraints();
         c.fill = fill;
         c.gridx = gridx;
@@ -46,7 +48,7 @@ public class GenerationGUI implements  Generator.C{
         return c;
     }
 
-    private static GridBagConstraints setGridBagSettings(int fill, int gridx, int gridy, float weightx, float weighty, int anchor) {
+    private GridBagConstraints setGridBagSettings(int fill, int gridx, int gridy, float weightx, float weighty, int anchor) {
         GridBagConstraints c = new GridBagConstraints();
         c.fill = fill;
         c.gridx = gridx;
@@ -57,7 +59,7 @@ public class GenerationGUI implements  Generator.C{
         return c;
     }
 
-    private static GridBagConstraints setGridBagSettings(int fill, int gridx, int gridy, float weightx, float weighty, Insets insets, int anchor) {
+    private GridBagConstraints setGridBagSettings(int fill, int gridx, int gridy, float weightx, float weighty, Insets insets, int anchor) {
         GridBagConstraints c = new GridBagConstraints();
         c.fill = fill;
         c.gridx = gridx;
@@ -69,7 +71,7 @@ public class GenerationGUI implements  Generator.C{
         return c;
     }
 
-    private static GridBagConstraints setGridBagSettings(int fill, int gridx, int gridy, float weightx, float weighty, int gridwidth, int gridheight, Insets insets, int anchor) {
+    private GridBagConstraints setGridBagSettings(int fill, int gridx, int gridy, float weightx, float weighty, int gridwidth, int gridheight, Insets insets, int anchor) {
         GridBagConstraints c = new GridBagConstraints();
         c.fill = fill;
         c.gridx = gridx;
@@ -83,7 +85,7 @@ public class GenerationGUI implements  Generator.C{
         return c;
     }
 
-    private static GridBagConstraints setGridBagSettings(int fill, int gridx, int gridy, float weightx, float weighty, Insets insets) {
+    private GridBagConstraints setGridBagSettings(int fill, int gridx, int gridy, float weightx, float weighty, Insets insets) {
         GridBagConstraints c = new GridBagConstraints();
         c.fill = fill;
         c.gridx = gridx;
@@ -94,7 +96,7 @@ public class GenerationGUI implements  Generator.C{
         return c;
     }
 
-    private static JPanel fillTaskName(JPanel panel) {
+    private JPanel fillTaskName(JPanel panel) {
         panel.setLayout(new GridBagLayout());
         nameLabel = new JLabel("Название: ");
         textNameLabel = new JLabel("Тут будет название варианта");
@@ -104,7 +106,7 @@ public class GenerationGUI implements  Generator.C{
         return panel;
     }
 
-    private static JPanel fillTaskDataKey(JPanel panel) {
+    private JPanel fillTaskDataKey(JPanel panel) {
         panel.setLayout(new GridBagLayout());
         dataLabel = new JLabel("Сертификат: ");
         dataTextArea = new JTextArea(5, 20);
@@ -119,7 +121,7 @@ public class GenerationGUI implements  Generator.C{
         return panel;
     }
 
-    private static JPanel fillTaskProvider(JPanel panel) {
+    private JPanel fillTaskProvider(JPanel panel) {
         panel.setLayout(new GridBagLayout());
         providerLabel = new JLabel("Провайдер: ");
         textProviderLabel = new JLabel("Тут будет название провайдера");
@@ -129,7 +131,7 @@ public class GenerationGUI implements  Generator.C{
         return panel;
     }
 
-    private static JPanel fillTaskPanel(JPanel panel) {
+    private JPanel fillTaskPanel(JPanel panel) {
         panel.setLayout(new GridBagLayout());
         JPanel j1 = new JPanel();
         j1.setBackground(new Color(255, 0, 255));
@@ -150,7 +152,7 @@ public class GenerationGUI implements  Generator.C{
         return panel;
     }
 
-    private static JPanel fillFuncPanel(JPanel panel) {
+    private JPanel fillFuncPanel(JPanel panel) {
         panel.setLayout(new GridBagLayout());
         infoLabel = new JLabel("<html>Строка1<br>Строка2<br>Строка 3</html>");
         generateTaskButton = new JButton("Сгенерировать задание");
@@ -161,25 +163,28 @@ public class GenerationGUI implements  Generator.C{
         return panel;
     }
 
-    private static void buttonJob() {
+    private void buttonJob() {
 
         saveClipboardCrtButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                saveClipboardCrtButton.setText("1");
+
             }
         });
         generateTaskButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 // запустить процедуру генерации задачи
-
+                app.generate();
             }
         });
 
     }
 
-    public static void createGUI() {
+    public void createGUI() {
+        app = new App();
+        app.registerCallBack(this);
+        
         mainFrame = new JFrame("Генератор заданий");
         mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         mainFrame.setSize(700, 400);
@@ -212,4 +217,29 @@ public class GenerationGUI implements  Generator.C{
     }
 
 
+    @Override
+    public void appCallback(CallBackNotifications callBackNotifications, Object obj) {
+        switch (callBackNotifications) {
+            case CreateIdTask: {
+
+                break;
+            }
+            case CreateNameTask: {
+                textNameLabel.setText(obj.toString());
+                break;
+            }
+            case CreateProviderTask: {
+                textProviderLabel.setText(obj.toString());
+                break;
+            }
+            case CreateDataTask: {
+
+                break;
+            }
+            case FinishInitData:{
+                System.out.println("Finish Init Data");
+                break;
+            }
+        }
+    }
 }
