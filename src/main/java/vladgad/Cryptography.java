@@ -39,6 +39,7 @@ public class Cryptography {
             keyPairGenerator.initialize(2048);
             KeyPair pair = keyPairGenerator.generateKeyPair();
             String crt = generateCrt(generateX509Certificate(pair, task));
+            System.out.println(crt);
             writeCrtToFile(Path.PATH_CERT + task.getId() + ".crt", crt);
             String key = generatePrivateKeyPEM(new String(Base64.encodeBase64(pair.getPrivate().getEncoded())));
             savePrivateKey(key, Path.PATH_PRIVATE_KEYS + task.getId() + ".pem");

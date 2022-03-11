@@ -5,7 +5,7 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.Random;
 
-public class Generator {
+public class Generator implements Runnable{
     //class for generation variant task
     // 1 - Id task
     // 2 - Name cert
@@ -14,12 +14,23 @@ public class Generator {
     // 5 - Scheme supllement
     // 6? - Question for check knowledge student
 
+    private static Thread generatorThread;
     private static ArrayList<Task> tasks = new ArrayList<>();
     private static ArrayList<String> names = new ArrayList<>();
     private static ArrayList<String> data = new ArrayList<>();
     private static ArrayList<String> que = new ArrayList<>();
     private static ArrayList<String> que2 = new ArrayList<>();
     private static ArrayList<String> que3 = new ArrayList<>();
+    private static CallBack callBack;
+
+
+    interface  CallBack{
+        void generatorCallBack(CallBackNotifications callBackNotifications, Object obj);
+    }
+
+    public void registerCallBack(CallBack callBack) {
+        this.callBack = callBack;
+    }
 
     public static void initialization() {
         names = getInformationFromFile(Path.PATH_NAMES);
@@ -100,5 +111,10 @@ public class Generator {
         byte bytes[] = que.getBytes("UTF-8");
         String value = new String(bytes, "UTF-8");
         System.out.println(value);
+    }
+
+    @Override
+    public void run() {
+
     }
 }

@@ -5,7 +5,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-public class GenerationGUI {
+public class GenerationGUI implements  Generator.C{
     private static JFrame mainFrame;
     private static JLabel nameLabel;
     private static JLabel textNameLabel;
@@ -16,6 +16,9 @@ public class GenerationGUI {
     private static JTextArea dataTextArea;
     private static JButton saveClipboardCrtButton;
     private static JButton generateTaskButton;
+
+
+
 
 
     private static int noZero(int x) {
@@ -108,7 +111,7 @@ public class GenerationGUI {
         dataTextArea.setLineWrap(true);
         dataTextArea.setWrapStyleWord(true);
         dataTextArea.setEditable(false);
-        dataTextArea.setText("dslkgfskdjfsdkfjksaldfjskldjflksdjfkjsdklfjskd");
+        dataTextArea.setText("MIIC6zCCAdOgAwIBAgIEeNBUbzANBgkqhkiG9w0BAQUFADAlMSMwIQYDVQQDDBpC=");
         saveClipboardCrtButton = new JButton("Копировать сертификат");
         panel.add(dataLabel, setGridBagSettings(GridBagConstraints.HORIZONTAL, 0, 0, 0.3f, 1f, new Insets(0, 50, 0, 0)));
         panel.add(dataTextArea, setGridBagSettings(GridBagConstraints.NONE, 1, 0, 0.7f, 1f, GridBagConstraints.LINE_START));
@@ -169,7 +172,8 @@ public class GenerationGUI {
         generateTaskButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                generateTaskButton.setText("2");
+                // запустить процедуру генерации задачи
+
             }
         });
 
@@ -205,6 +209,7 @@ public class GenerationGUI {
         buttonJob();
         mainFrame.setContentPane(mainPanel);
         mainFrame.setVisible(true);
-
     }
+
+
 }
