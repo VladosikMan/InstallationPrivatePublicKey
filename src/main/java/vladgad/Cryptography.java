@@ -32,14 +32,15 @@ public class Cryptography {
      * @version 1
      */
 
-    private static void generatePair(Task task) {
+    public static String generatePair(Task task) {
         // generate pair keys
+        String certificate = null;
         try {
             KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance("RSA");
             keyPairGenerator.initialize(2048);
             KeyPair pair = keyPairGenerator.generateKeyPair();
-            String crt = generateCrt(generateX509Certificate(pair, task));
-            System.out.println(crt);
+            certificate = generateX509Certificate(pair, task);
+            String crt = generateCrt(certificate);
             writeCrtToFile(Path.PATH_CERT + task.getId() + ".crt", crt);
             String key = generatePrivateKeyPEM(new String(Base64.encodeBase64(pair.getPrivate().getEncoded())));
             savePrivateKey(key, Path.PATH_PRIVATE_KEYS + task.getId() + ".pem");
@@ -53,6 +54,7 @@ public class Cryptography {
             e.printStackTrace();
         }
 
+        return certificate;
     }
 
     private static void writeCrtToFile(String path, String crt) throws IOException {
@@ -76,7 +78,6 @@ public class Cryptography {
                 .replace("-----BEGIN PRIVATE KEY-----", "")
                 .replaceAll(System.lineSeparator(), "")
                 .replace("-----END PRIVATE KEY-----", "");
-        System.out.println(privateKeyPEM);
         byte[] encoded = Base64.decodeBase64(privateKeyPEM);
 
         KeyFactory keyFactory = null;
@@ -87,8 +88,6 @@ public class Cryptography {
         }
         PKCS8EncodedKeySpec keySpec = new PKCS8EncodedKeySpec(encoded);
         return keyFactory.generatePrivate(keySpec);
-
-
     }
 
     private static String generateX509Certificate(KeyPair keyPair, Task task) {
@@ -175,10 +174,5 @@ public class Cryptography {
             e.printStackTrace();
         }
         return cert;
-    }
-
-    public static void main(String[] args) throws FileNotFoundException {
-//        Generator.initialization();
-//        generatePair(Generator.generatetask());
     }
 }
