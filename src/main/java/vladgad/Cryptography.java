@@ -1,6 +1,6 @@
-import com.sun.jarsigner.ContentSigner;
+package vladgad;
+
 import org.bouncycastle.asn1.x509.X509Extensions;
-import org.bouncycastle.asn1.x509.X509Name;
 import org.bouncycastle.jce.X509Principal;
 import org.bouncycastle.x509.X509V3CertificateGenerator;
 import org.bouncycastle.x509.extension.SubjectKeyIdentifierStructure;
@@ -14,9 +14,9 @@ import java.nio.file.Files;
 import java.security.*;
 import java.security.cert.*;
 import java.security.cert.Certificate;
-import java.security.spec.InvalidKeySpecException;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.util.*;
+
 
 import org.apache.commons.codec.binary.Base64;
 
@@ -26,7 +26,7 @@ public class Cryptography {
     public final static String LINE_SEPARATOR = System.getProperty("line.separator");
 
     /**
-     * A class for wokr with Cryptography
+     * A class for wokr with vladgad.Cryptography
      *
      * @author Vedernikov Vladislav
      * @version 1
@@ -178,7 +178,7 @@ public class Cryptography {
     }
 
     public static void main(String[] args) throws FileNotFoundException {
-        Generator.initialization();
-        generatePair(Generator.generatetask());
+//        Generator.initialization();
+//        generatePair(Generator.generatetask());
     }
 }

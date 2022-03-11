@@ -1,3 +1,5 @@
+package vladgad;
+
 public class Path {
     final static  String PATH_NAMES = "data/generate/names.txt";
     final static  String PATH_DATA = "data/generate/data.txt";
