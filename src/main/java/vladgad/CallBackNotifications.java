@@ -6,5 +6,7 @@ public enum CallBackNotifications {
     CreateCrtTask,
     CreateDataTask,
     CreateProviderTask,
-    FinishInitData
+    FinishInitData,
+    InitOpenTasks,
+    ResultCheckAnswer
 }
