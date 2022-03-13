@@ -22,6 +22,7 @@ public class Generator implements Runnable {
     private ArrayList<String> que2 = new ArrayList<>();
     private ArrayList<String> que3 = new ArrayList<>();
     private CallBack callBack;
+    private Storage storage;
 
 
     public interface CallBack {
@@ -33,6 +34,7 @@ public class Generator implements Runnable {
     }
 
     public void initialization() {
+        storage = new Storage();
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -72,6 +74,9 @@ public class Generator implements Runnable {
 
     private String createIdTask(String name) {
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(Calendar.getInstance().getTime());
+        System.out.println("1");
+        System.out.println(timeStamp);
+        System.out.println("2");
         return name + "_" + timeStamp;
     }
 
@@ -88,11 +93,6 @@ public class Generator implements Runnable {
     private String createProvide() {
         Providers[] providers = Providers.values();
         return providers[0 + (int) (Math.random() * Providers.values().length)].getUrl();
-    }
-
-    private String createQuestion() {
-        return que.get(0 + (int) (Math.random() * que.size())) + "\n" + que2.get(0 + (int) (Math.random() * que2.size())) +
-                "\n" + que3.get(0 + (int) (Math.random() * que3.size()));
     }
 
     private ArrayList<Task> getTasks() {
@@ -113,7 +113,7 @@ public class Generator implements Runnable {
         callBack.generatorCallBack(CallBackNotifications.CreateNameTask, name);
 
         String id = createIdTask(task.getName());
-        task.setId(createIdTask(id));
+        task.setId(id);
 
         String data = createKeyData();
         task.setDataKey(data);
@@ -124,11 +124,16 @@ public class Generator implements Runnable {
         task.setProvider(provider);
         callBack.generatorCallBack(CallBackNotifications.CreateProviderTask, provider);
 
-        String que = createQuestion();
-        task.setQuestion(que);
-        Storage.saveTask(task);
+
+        storage.saveTask(task);
 
         String crt = Cryptography.generatePair(task);
         callBack.generatorCallBack(CallBackNotifications.CreateCrtTask, crt);
+    }
+
+    public void createQuestion() {
+        String s = "<html>" + que.get(0 + (int) (Math.random() * que.size())) + "<br>" + que2.get(0 + (int) (Math.random() * que2.size())) +
+                "<br>" + que3.get(0 + (int) (Math.random() * que3.size())) + "</html>";
+        callBack.generatorCallBack(CallBackNotifications.CreateQuestions, s);
     }
 }

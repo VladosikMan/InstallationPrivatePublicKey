@@ -5,7 +5,7 @@ public class Task {
     private String name;
     private String dataKey;
     private String provider;
-    private String question;
+    //private String question;
 
     public Task() {
 
@@ -43,11 +43,11 @@ public class Task {
         this.provider = provider;
     }
 
-    public String getQuestion() {
-        return question;
-    }
-
-    public void setQuestion(String question) {
-        this.question = question;
-    }
+//    public String getQuestion() {
+//        return question;
+//    }
+//
+//    public void setQuestion(String question) {
+//        this.question = question;
+//    }
 }

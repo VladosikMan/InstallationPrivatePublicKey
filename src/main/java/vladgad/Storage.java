@@ -3,21 +3,23 @@ package vladgad;
 import java.io.*;
 import java.util.ArrayList;
 
-public class Storage implements Runnable{
+public class Storage implements Runnable {
     //class for store tasks
-    private  ArrayList<Task> tasks = new ArrayList<>();
+    private ArrayList<Task> tasks = new ArrayList<>();
     private Thread storageTh;
     private CallBack callBack;
-    public interface CallBack{
-        void storageCallBack(CallBackNotifications  callBackNotifications, Object obj);
+
+    public interface CallBack {
+        void storageCallBack(CallBackNotifications callBackNotifications, Object obj);
     }
-    public void registerCallBack(CallBack callBack){
+
+    public void registerCallBack(CallBack callBack) {
         this.callBack = callBack;
     }
 
-    public  void saveTask(Task task) {
+    public void saveTask(Task task) {
         String strTask = task.getId() + "&" + task.getName() + "&" + task.getDataKey() + "&" +
-                task.getProvider() + "&" + task.getQuestion();
+                task.getProvider();
         String fpath = Path.PATH_SAVE_TASKS + task.getId() + ".txt";
         try {
             saveFile(fpath, strTask);
@@ -26,7 +28,7 @@ public class Storage implements Runnable{
         }
     }
 
-    private  void saveFile(String fpath, String data) throws IOException {
+    private void saveFile(String fpath, String data) throws IOException {
         File file = new File(fpath);
         BufferedWriter writer = new BufferedWriter(new FileWriter(file, true));
         String[] words = data.split("\n");
@@ -37,27 +39,28 @@ public class Storage implements Runnable{
         writer.close();
     }
 
-    public  void initTasks() {
+    public void initTasks() {
 
         storageTh = new Thread(this);
         storageTh.start();
 
     }
-    public  Task getTask(String idTask){
+
+    public Task getTask(String idTask) {
         Task taske = null;
-        for (Task task:tasks) {
-            if(idTask.equals(task.getId())){
+        for (Task task : tasks) {
+            if (idTask.equals(task.getId())) {
                 return task;
             }
         }
         return taske;
     }
 
-    public  ArrayList<Task> getTasks() {
+    public ArrayList<Task> getTasks() {
         return tasks;
     }
 
-    private  Task readTaskFile(File file) {
+    private Task readTaskFile(File file) {
         Task task = new Task();
         StringBuilder contentBuilder = new StringBuilder();
         try (BufferedReader br = new BufferedReader(new FileReader(file))) {
@@ -73,7 +76,6 @@ public class Storage implements Runnable{
         task.setName(split[1]);
         task.setDataKey(split[2]);
         task.setProvider(split[3]);
-        task.setQuestion(split[4]);
         return task;
     }
 

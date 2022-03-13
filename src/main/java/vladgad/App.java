@@ -12,9 +12,9 @@ public class App implements Generator.CallBack, CheckAnswer.CallBack, Storage.Ca
 
 
     public App() {
-//        generator = new Generator();
-//        generator.registerCallBack(this);
-//        generator.initialization();
+        generator = new Generator();
+        generator.registerCallBack(this);
+        generator.initialization();
 
         checkAnswer = new CheckAnswer();
         checkAnswer.registerCallBack(this);
@@ -32,11 +32,16 @@ public class App implements Generator.CallBack, CheckAnswer.CallBack, Storage.Ca
     }
 
     public void checkAnswer(String taskId, String encrypt) {
-        //получитить задачу и закрытый ключ
+//        //получитить задачу и закрытый ключ
+//        System.out.println(taskId);
+//        System.out.println(encrypt);
         Task task = storage.getTask(taskId);
         checkAnswer.check(task, encrypt);
     }
 
+    public void createQuestions() {
+        generator.createQuestion();
+    }
 
     public interface Callback {
         void appCallback(CallBackNotifications callBackNotifications, Object obj);
@@ -68,7 +73,7 @@ public class App implements Generator.CallBack, CheckAnswer.CallBack, Storage.Ca
                 callBack.appCallback(callBackNotifications, idTasks);
                 break;
             }
-            default:{
+            default: {
                 callBack.appCallback(callBackNotifications, obj);
                 break;
             }
