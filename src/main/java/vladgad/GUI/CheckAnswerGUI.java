@@ -23,6 +23,7 @@ public class CheckAnswerGUI implements App.Callback {
     private JLabel textComboLabel;
     private JComboBox<String> taskComboBox;
     private JLabel infoFuncLabel;
+    private JLabel statusFuncLabel;
     private JButton checkAnswerButton;
     private JButton goGenerateButton;
 
@@ -63,13 +64,15 @@ public class CheckAnswerGUI implements App.Callback {
         taskComboBox = new JComboBox<>();
         app.initTasks();
         infoFuncLabel = new JLabel("<html>Строка1<br>Строка2<br>Строка 3</html>");
+        statusFuncLabel = new JLabel();
         checkAnswerButton = new JButton("Проверить вариант");
         goGenerateButton = new JButton("Генерация задач");
         panel.add(textComboLabel, setGridBagSettings(GridBagConstraints.NONE, 0, 0, 1f, 0.1f));
         panel.add(taskComboBox, setGridBagSettings(GridBagConstraints.NONE, 0, 1, 1f, 0.2f));
-        panel.add(infoFuncLabel, setGridBagSettings(GridBagConstraints.NONE, 0, 2, 1f, 0.3f));
-        panel.add(checkAnswerButton, setGridBagSettings(GridBagConstraints.NONE, 0, 3, 1f, 0.3f));
-        panel.add(goGenerateButton, setGridBagSettings(GridBagConstraints.NONE, 0, 4, 1f, 0.1f));
+        panel.add(infoFuncLabel, setGridBagSettings(GridBagConstraints.NONE, 0, 2, 1f, 0.2f));
+        panel.add(statusFuncLabel, setGridBagSettings(GridBagConstraints.NONE, 0, 3, 1f, 0.1f));
+        panel.add(checkAnswerButton, setGridBagSettings(GridBagConstraints.NONE, 0, 4, 1f, 0.3f));
+        panel.add(goGenerateButton, setGridBagSettings(GridBagConstraints.NONE, 0, 5, 1f, 0.1f));
         return panel;
     }
 
@@ -107,8 +110,11 @@ public class CheckAnswerGUI implements App.Callback {
         checkAnswerButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-
-
+                if(!textEncryptTextArea.getText().isEmpty()){
+                    app.checkAnswer(taskComboBox.getItemAt(taskComboBox.getSelectedIndex()),textEncryptTextArea.getText());
+                }else{
+                    appCallback(CallBackNotifications.EmptyTextArea, null);
+                }
             }
         });
         goGenerateButton.addActionListener(new ActionListener() {
@@ -196,19 +202,23 @@ public class CheckAnswerGUI implements App.Callback {
             case ResultCheckAnswer:{
                 switch ((StatusCheck)obj){
                     case Success:{
-                        System.out.println("Success");
+                        statusFuncLabel.setText("Задание выполнено");
                         break;
                     }
                     case Fail:{
-                        System.out.println("Fail");
+                        statusFuncLabel.setText("Соообщение не сошлось");
                         break;
                     }
                     case Error:{
-                        System.out.println("Error");
+                        statusFuncLabel.setText("Ошибка расшифровки");
                         break;
                     }
 
                 }
+                break;
+            }
+            case EmptyTextArea:{
+                statusFuncLabel.setText("Не введены данные");
                 break;
             }
             default:
