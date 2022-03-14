@@ -25,6 +25,7 @@ public class GenerationGUI implements App.CallbackGenerate {
     private JButton generateTaskButton;
     private JButton goCheckAnswerButton;
     private App app;
+    private JScrollPane sp;
 
 
     private int noZero(int x) {
@@ -102,29 +103,31 @@ public class GenerationGUI implements App.CallbackGenerate {
 
     private JPanel fillTaskName(JPanel panel) {
         panel.setLayout(new GridBagLayout());
-        panel.add(dataLabel, setGridBagSettings(GridBagConstraints.HORIZONTAL, 0, 0, 0.1f, 0f, new Insets(0, 50, 0, 0), GridBagConstraints.LINE_START));
-        panel.add(textDataLabel, setGridBagSettings(GridBagConstraints.HORIZONTAL, 1, 0, 0.9f, 0f, new Insets(0, 0, 0, 5), GridBagConstraints.LINE_START));
-        panel.add(saveClipboardDataButton, setGridBagSettings(GridBagConstraints.NONE,1,0,1f,1f,2,1,new Insets(0,0,20,20),GridBagConstraints.LAST_LINE_END));
+        panel.add(dataLabel, setGridBagSettings(GridBagConstraints.NONE, 0, 0, 0.05f, 1f, new Insets(20, 10, 0, 0), GridBagConstraints.FIRST_LINE_START));
+        panel.add(textDataLabel, setGridBagSettings(GridBagConstraints.HORIZONTAL, 1, 0, 0.95f, 1f, new Insets(20, 0, 0, 40), GridBagConstraints.FIRST_LINE_START));
+        panel.add(saveClipboardDataButton, setGridBagSettings(GridBagConstraints.NONE,1,0,1f,1f,2,1,new Insets(10,0,5,20),GridBagConstraints.LAST_LINE_END));
         return panel;
     }
 
     private JPanel fillTaskDataKey(JPanel panel) {
         panel.setLayout(new GridBagLayout());
-        panel.add(crtLabel, setGridBagSettings(GridBagConstraints.HORIZONTAL, 0, 0, 0.3f, 1f, new Insets(0, 50, 0, 0)));
-        panel.add(crtTextArea, setGridBagSettings(GridBagConstraints.HORIZONTAL, 1, 0, 0.7f, 1f, new Insets(0, 0, 0, 5), GridBagConstraints.LINE_START));
-        panel.add(saveClipboardCrtButton, setGridBagSettings(GridBagConstraints.NONE, 0, 1, 1f, 1f, 2, 1, new Insets(0, 0, 0, 20), GridBagConstraints.FIRST_LINE_END));
+        panel.add(crtLabel, setGridBagSettings(GridBagConstraints.HORIZONTAL, 0, 0, 0.1f, 1f, new Insets(20, 10, 0, 0),GridBagConstraints.FIRST_LINE_START));
+        panel.add(sp, setGridBagSettings(GridBagConstraints.HORIZONTAL, 1, 0, 0.9f, 1f, new Insets(20, 0, 0, 20), GridBagConstraints.FIRST_LINE_START));
+        panel.add(saveClipboardCrtButton, setGridBagSettings(GridBagConstraints.NONE, 0, 1, 1f, 0.3f, 2, 1, new Insets(0, 0, 0, 20), GridBagConstraints.FIRST_LINE_END));
         return panel;
     }
 
     private JPanel fillTaskProvider(JPanel panel) {
         panel.setLayout(new GridBagLayout());
-        panel.add(providerLabel, setGridBagSettings(GridBagConstraints.HORIZONTAL, 0, 0, 0.3f, 0f, new Insets(0, 50, 0, 0), GridBagConstraints.LINE_START));
+        panel.add(providerLabel, setGridBagSettings(GridBagConstraints.HORIZONTAL, 0, 0, 0.3f, 0f, new Insets(0, 10, 0, 0), GridBagConstraints.LINE_START));
         panel.add(textProviderLabel, setGridBagSettings(GridBagConstraints.HORIZONTAL, 1, 0, 0.7f, 0f));
         return panel;
     }
 
     private JPanel fillTaskPanel(JPanel panel) {
         panel.setLayout(new GridBagLayout());
+
+
         JPanel j1 = new JPanel();
         j1.setBackground(new Color(255, 0, 255));
         j1 = fillTaskName(j1);
@@ -137,9 +140,9 @@ public class GenerationGUI implements App.CallbackGenerate {
         j3.setBackground(new Color(255, 255, 255));
         j3 = fillTaskProvider(j3);
 
-        panel.add(j1, setGridBagSettings(GridBagConstraints.BOTH, 0, 0, 1, 0.25f));
-        panel.add(j2, setGridBagSettings(GridBagConstraints.BOTH, 0, 1, 1f, 0.5f));
-        panel.add(j3, setGridBagSettings(GridBagConstraints.BOTH, 0, 2, 1f, 0.25f));
+        panel.add(j1, setGridBagSettings(GridBagConstraints.BOTH, 0, 0, 1f, 0.10f));
+        panel.add(j2, setGridBagSettings(GridBagConstraints.BOTH, 0, 1, 1f, 0.8f));
+        panel.add(j3, setGridBagSettings(GridBagConstraints.BOTH, 0, 2, 1f, 0.1f));
 
         return panel;
     }
@@ -199,10 +202,16 @@ public class GenerationGUI implements App.CallbackGenerate {
         textDataLabel = new JTextField(80);
         textDataLabel.setEditable(false);
         crtLabel = new JLabel("Сертификат: ");
-        crtTextArea = new JTextArea(15, 50);
+        crtTextArea = new JTextArea(17, 30);
+
+
         crtTextArea.setLineWrap(true);
         crtTextArea.setWrapStyleWord(true);
         crtTextArea.setEditable(false);
+        sp = new JScrollPane(crtTextArea);
+        sp.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
+        //sp.setBounds(17,50,400,400);
+
         saveClipboardCrtButton = new JButton("Копировать сертификат");
         saveClipboardDataButton = new JButton("Копировать строку");
         providerLabel = new JLabel("Провайдер: ");
@@ -228,25 +237,25 @@ public class GenerationGUI implements App.CallbackGenerate {
 
         mainFrame = new JFrame("Генератор заданий");
         mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        mainFrame.setSize(900, 600);
-        mainFrame.setLocation(500, 50);
+        mainFrame.setSize(820, 530);
+        mainFrame.setLocation(300, 50);
         mainFrame.setResizable(true);
 
         JPanel mainPanel = new JPanel();
         mainPanel.setLayout(new GridBagLayout());
 
         JPanel taskPanel = new JPanel();
-        taskPanel.setBackground(new Color(255, 0, 0));
+        //taskPanel.setBackground(new Color(255, 0, 0));
         taskPanel = fillTaskPanel(taskPanel);
 
-        mainPanel.add(taskPanel, setGridBagSettings(GridBagConstraints.BOTH, 0, 0, 0.6f, 1));
+        mainPanel.add(taskPanel, setGridBagSettings(GridBagConstraints.BOTH, 0, 0, 0.8f, 1));
 
 
         JPanel funcPanel = new JPanel();
-        funcPanel.setBackground(new Color(0, 0, 255));
+        //funcPanel.setBackground(new Color(0, 0, 255));
         funcPanel = fillFuncPanel(funcPanel);
 
-        mainPanel.add(funcPanel, setGridBagSettings(GridBagConstraints.BOTH, 1, 0, 0.4f, 1));
+        mainPanel.add(funcPanel, setGridBagSettings(GridBagConstraints.BOTH, 1, 0, 0.2f, 1));
         buttonJob();
         mainFrame.setContentPane(mainPanel);
 
