@@ -39,7 +39,7 @@ public class Storage implements Runnable {
         writer.close();
     }
 
-    public void initTasks() {
+    public void updateTask() {
 
         storageTh = new Thread(this);
         storageTh.start();
@@ -83,7 +83,7 @@ public class Storage implements Runnable {
     public void run() {
         for (final File fileEntry : new File(Path.PATH_SAVE_TASKS).listFiles())
             tasks.add(readTaskFile(fileEntry));
-        callBack.storageCallBack(CallBackNotifications.InitOpenTasks, tasks);
+        callBack.storageCallBack(CallBackNotifications.UpdateOpenTasks, tasks);
     }
 
     public void deleteFiles(String idTask) {
@@ -110,6 +110,7 @@ public class Storage implements Runnable {
                 } else {
                     System.out.println("Failed to delete the file");
                 }
+                callBack.storageCallBack(CallBackNotifications.FinishDeleteTask, null);
             }
         }).start();
 
