@@ -83,7 +83,17 @@ public class App implements Generator.CallBack, CheckAnswer.CallBack, Storage.Ca
 
     @Override
     public void checkAnswerCallBack(CallBackNotifications callBackNotifications, Object obj) {
-        callBack.appCallback(callBackNotifications, obj);
+        switch (callBackNotifications){
+            case DeleteTask:{
+                storage.deleteFiles(obj.toString());
+                break;
+            }
+            default:{
+                callBack.appCallback(callBackNotifications, obj);
+                break;
+            }
+        }
+
     }
 
     @Override

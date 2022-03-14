@@ -10,5 +10,6 @@ public enum CallBackNotifications {
     InitOpenTasks,
     ResultCheckAnswer,
     EmptyTextArea,
-    CreateQuestions
+    CreateQuestions,
+    DeleteTask
 }

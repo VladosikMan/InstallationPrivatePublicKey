@@ -85,4 +85,33 @@ public class Storage implements Runnable {
             tasks.add(readTaskFile(fileEntry));
         callBack.storageCallBack(CallBackNotifications.InitOpenTasks, tasks);
     }
+
+    public void deleteFiles(String idTask) {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                File cert = new File(Path.PATH_CERT + idTask + ".crt");
+                File privateKey = new File(Path.PATH_PRIVATE_KEYS + idTask + ".pem");
+                File task = new File(Path.PATH_SAVE_TASKS + idTask + ".txt");
+                if (cert.delete()) {
+                    System.out.println("File deleted successfully");
+                } else {
+                    System.out.println("Failed to delete the file");
+                }
+
+                if (privateKey.delete()) {
+                    System.out.println("File deleted successfully");
+                } else {
+                    System.out.println("Failed to delete the file");
+                }
+
+                if (task.delete()) {
+                    System.out.println("File deleted successfully");
+                } else {
+                    System.out.println("Failed to delete the file");
+                }
+            }
+        }).start();
+
+    }
 }
