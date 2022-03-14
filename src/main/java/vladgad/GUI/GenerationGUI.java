@@ -156,7 +156,7 @@ public class GenerationGUI implements App.CallbackGenerate {
         saveClipboardCrtButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if (!crtTextArea.getText().isEmpty()){
+                if (!crtTextArea.getText().isEmpty()) {
                     String myString = crtTextArea.getText();
                     StringSelection stringSelection = new StringSelection(myString);
                     Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
@@ -180,7 +180,8 @@ public class GenerationGUI implements App.CallbackGenerate {
         });
 
     }
-    private void initElements(){
+
+    private void initElements() {
         dataLabel = new JLabel("Строка шифрования: ");
         textDataLabel = new JTextField(80);
         crtLabel = new JLabel("Сертификат: ");
@@ -190,15 +191,22 @@ public class GenerationGUI implements App.CallbackGenerate {
         crtTextArea.setEditable(false);
         saveClipboardCrtButton = new JButton("Копировать сертификат");
         providerLabel = new JLabel("Провайдер: ");
-        textProviderLabel = new JLabel("Тут будет название провайдера");
+        textProviderLabel = new JLabel();
         infoLabel = new JLabel("<html>Строка1<br>Строка2<br>Строка 3</html>");
         generateTaskButton = new JButton("Сгенерировать задание");
         goCheckAnswerButton = new JButton("Проверить задание");
     }
 
-    public GenerationGUI(){
+    public void clearElements() {
+        textDataLabel.setText("");
+        crtTextArea.setText("");
+        textProviderLabel.setText("");
+    }
+
+    public GenerationGUI() {
         initElements();
     }
+
     public void createGUI(App app) {
         this.app = app;
         app.registerCallBackGenerate(this);
@@ -230,9 +238,11 @@ public class GenerationGUI implements App.CallbackGenerate {
     }
 
 
-    public void setVisible(boolean visible){
+    public void setVisible(boolean visible) {
         mainFrame.setVisible(visible);
+       clearElements();
     }
+
 
     @Override
     public void appCallbackGenerate(CallBackNotifications callBackNotifications, Object obj) {
@@ -254,11 +264,11 @@ public class GenerationGUI implements App.CallbackGenerate {
                 textDataLabel.setText(obj.toString());
                 break;
             }
-            case FinishInitData:{
+            case FinishInitData: {
                 System.out.println("Finish Init Data");
                 break;
             }
-            case CreateCrtTask:{
+            case CreateCrtTask: {
                 crtTextArea.setText(obj.toString());
                 break;
             }
