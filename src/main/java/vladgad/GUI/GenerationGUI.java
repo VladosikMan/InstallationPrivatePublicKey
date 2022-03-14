@@ -11,7 +11,7 @@ import java.awt.datatransfer.StringSelection;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-public class GenerationGUI implements App.Callback {
+public class GenerationGUI implements App.CallbackGenerate {
     private JFrame mainFrame;
     private JLabel dataLabel;
     private JTextField textDataLabel;
@@ -201,7 +201,7 @@ public class GenerationGUI implements App.Callback {
     }
     public void createGUI(App app) {
         this.app = app;
-        app.registerCallBack(this);
+        app.registerCallBackGenerate(this);
 
         mainFrame = new JFrame("Генератор заданий");
         mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -234,9 +234,9 @@ public class GenerationGUI implements App.Callback {
         mainFrame.setVisible(visible);
     }
 
-
     @Override
-    public void appCallback(CallBackNotifications callBackNotifications, Object obj) {
+    public void appCallbackGenerate(CallBackNotifications callBackNotifications, Object obj) {
+        System.out.println("Generate " + callBackNotifications);
         switch (callBackNotifications) {
             case CreateIdTask: {
 
@@ -264,4 +264,5 @@ public class GenerationGUI implements App.Callback {
             }
         }
     }
+
 }

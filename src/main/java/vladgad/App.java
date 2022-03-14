@@ -8,7 +8,8 @@ import java.util.ArrayList;
 
 public class App implements Generator.CallBack, CheckAnswer.CallBack, Storage.CallBack {
 
-    private Callback callBack;
+    private CallbackGenerate callbackGenerate;
+    private CallbackCheckAnswer callbackCheckAnswer;
     private Generator generator;
     private CheckAnswer checkAnswer;
     private Storage storage;
@@ -18,9 +19,12 @@ public class App implements Generator.CallBack, CheckAnswer.CallBack, Storage.Ca
 
 
     public App() {
+
+
         generator = new Generator();
         generator.registerCallBack(this);
         initData();
+
 
         checkAnswer = new CheckAnswer();
         checkAnswer.registerCallBack(this);
@@ -28,9 +32,15 @@ public class App implements Generator.CallBack, CheckAnswer.CallBack, Storage.Ca
         storage = new Storage();
         storage.registerCallBack(this);
 
+
+
+    }
+    public void startGUI(){
         generationGUI = new GenerationGUI();
         generationGUI.createGUI(this);
         generationGUI.setVisible(true);
+
+
         checkAnswerGUI = new CheckAnswerGUI();
         checkAnswerGUI.createGUI(this);
 
@@ -48,8 +58,8 @@ public class App implements Generator.CallBack, CheckAnswer.CallBack, Storage.Ca
     public void initData(){
         generator.initialization();
     }
-    public void initTasks() {
-        storage.initTasks();
+    public void updateTask() {
+        storage.updateTask();
     }
 
     public void generate() {
@@ -58,8 +68,6 @@ public class App implements Generator.CallBack, CheckAnswer.CallBack, Storage.Ca
 
     public void checkAnswer(String taskId, String encrypt) {
 //        //получитить задачу и закрытый ключ
-//        System.out.println(taskId);
-//        System.out.println(encrypt);
         Task task = storage.getTask(taskId);
         checkAnswer.check(task, encrypt);
     }
@@ -68,18 +76,36 @@ public class App implements Generator.CallBack, CheckAnswer.CallBack, Storage.Ca
         generator.createQuestion();
     }
 
-    public interface Callback {
-        void appCallback(CallBackNotifications callBackNotifications, Object obj);
+
+
+    public interface CallbackGenerate {
+        void appCallbackGenerate(CallBackNotifications callBackNotifications, Object obj);
     }
 
-    public void registerCallBack(Callback callBack) {
-        this.callBack = callBack;
+
+    public void registerCallBackGenerate(CallbackGenerate callbackGenerate) {
+        this.callbackGenerate = callbackGenerate;
     }
+
+
+    public interface CallbackCheckAnswer {
+        void appCallbackCheckAnswer(CallBackNotifications callBackNotifications, Object obj);
+    }
+
+
+    public void registerCallBackCheckAnswer(CallbackCheckAnswer callbackCheckAnswer) {
+        this.callbackCheckAnswer = callbackCheckAnswer;
+    }
+
+
+
 
     @Override
     public void generatorCallBack(CallBackNotifications callBackNotifications, Object obj) {
-        callBack.appCallback(callBackNotifications, obj);
+        callbackGenerate.appCallbackGenerate(callBackNotifications, obj);
     }
+
+
 
     @Override
     public void checkAnswerCallBack(CallBackNotifications callBackNotifications, Object obj) {
@@ -88,8 +114,9 @@ public class App implements Generator.CallBack, CheckAnswer.CallBack, Storage.Ca
                 storage.deleteFiles(obj.toString());
                 break;
             }
+
             default:{
-                callBack.appCallback(callBackNotifications, obj);
+                callbackCheckAnswer.appCallbackCheckAnswer(callBackNotifications, obj);
                 break;
             }
         }
@@ -99,17 +126,17 @@ public class App implements Generator.CallBack, CheckAnswer.CallBack, Storage.Ca
     @Override
     public void storageCallBack(CallBackNotifications callBackNotifications, Object obj) {
         switch (callBackNotifications) {
-            case InitOpenTasks: {
+            case UpdateOpenTasks: {
                 ArrayList<Task> tasks = (ArrayList<Task>) obj;
                 String[] idTasks = new String[tasks.size()];
                 for (int i = 0; i < tasks.size(); i++) {
                     idTasks[i] = tasks.get(i).getId();
                 }
-                callBack.appCallback(callBackNotifications, idTasks);
+                callbackCheckAnswer.appCallbackCheckAnswer(callBackNotifications, idTasks);
                 break;
             }
             default: {
-                callBack.appCallback(callBackNotifications, obj);
+                callbackCheckAnswer.appCallbackCheckAnswer(callBackNotifications, obj);
                 break;
             }
         }

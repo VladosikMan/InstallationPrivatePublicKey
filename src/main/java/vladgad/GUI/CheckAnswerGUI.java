@@ -12,7 +12,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 
-public class CheckAnswerGUI implements App.Callback {
+public class CheckAnswerGUI implements App.CallbackCheckAnswer {
     private JFrame mainFrame;
     private App app;
     private JLabel textEncrytLabel;
@@ -53,7 +53,7 @@ public class CheckAnswerGUI implements App.Callback {
 
     private JPanel fillFuncPanel(JPanel panel) {
         panel.setLayout(new GridBagLayout());
-        app.initTasks();
+        app.updateTask();
         panel.add(textComboLabel, setGridBagSettings(GridBagConstraints.NONE, 0, 0, 1f, 0.1f));
         panel.add(taskComboBox, setGridBagSettings(GridBagConstraints.NONE, 0, 1, 1f, 0.2f));
         panel.add(infoFuncLabel, setGridBagSettings(GridBagConstraints.NONE, 0, 2, 1f, 0.2f));
@@ -65,7 +65,7 @@ public class CheckAnswerGUI implements App.Callback {
 
     public void createGUI(App app) {
         this.app = app;
-        app.registerCallBack(this);
+        app.registerCallBackCheckAnswer(this);
 
         mainFrame = new JFrame("Проверка заданий");
         mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -101,7 +101,7 @@ public class CheckAnswerGUI implements App.Callback {
                 if (!textEncryptTextArea.getText().isEmpty()) {
                     app.checkAnswer(taskComboBox.getItemAt(taskComboBox.getSelectedIndex()), textEncryptTextArea.getText());
                 } else {
-                    appCallback(CallBackNotifications.EmptyTextArea, null);
+                    appCallbackCheckAnswer(CallBackNotifications.EmptyTextArea, null);
                 }
             }
         });
@@ -193,14 +193,13 @@ public class CheckAnswerGUI implements App.Callback {
         return c;
     }
 
-
     @Override
-    public void appCallback(CallBackNotifications callBackNotifications, Object obj) {
+    public void appCallbackCheckAnswer(CallBackNotifications callBackNotifications, Object obj) {
+        System.out.println("Check " + callBackNotifications);
         switch (callBackNotifications) {
-            case InitOpenTasks: {
+            case UpdateOpenTasks: {
                 String[] s = (String[]) obj;
                 taskComboBox.setModel(new DefaultComboBoxModel<>(s));
-                //taskComboBox = new JComboBox<>(s);
                 break;
             }
             case ResultCheckAnswer: {
@@ -208,8 +207,6 @@ public class CheckAnswerGUI implements App.Callback {
                     case Success: {
                         statusFuncLabel.setText("Задание выполнено");
                         app.createQuestions();
-                        //вывести вопросы
-
                         break;
                     }
                     case Fail: {
@@ -236,8 +233,11 @@ public class CheckAnswerGUI implements App.Callback {
                 queLabel.setText(obj.toString());
                 break;
             }
-            default:
-                throw new IllegalStateException("Unexpected value: " + callBackNotifications);
+            case FinishDeleteTask:{
+                app.updateTask();
+                break;
+            }
         }
     }
+
 }

@@ -7,9 +7,10 @@ public enum CallBackNotifications {
     CreateDataTask,
     CreateProviderTask,
     FinishInitData,
-    InitOpenTasks,
+    UpdateOpenTasks,
     ResultCheckAnswer,
     EmptyTextArea,
     CreateQuestions,
-    DeleteTask
+    DeleteTask,
+    FinishDeleteTask
 }
