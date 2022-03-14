@@ -8,17 +8,20 @@ public class CheckAnswer implements Runnable {
     private Thread checkAnswerTh;
     private Task task;
     private String encrypt;
-    public interface CallBack{
-        void checkAnswerCallBack(CallBackNotifications  callBackNotifications, Object obj);
+
+    public interface CallBack {
+        void checkAnswerCallBack(CallBackNotifications callBackNotifications, Object obj);
     }
-    public void registerCallBack(CallBack callBack){
+
+    public void registerCallBack(CallBack callBack) {
         this.callBack = callBack;
     }
-    public void CheckAnswer(){
+
+    public void CheckAnswer() {
 
     }
 
-    public void check(Task task, String encrypt){
+    public void check(Task task, String encrypt) {
         this.task = task;
         this.encrypt = encrypt;
         checkAnswerTh = new Thread(this);
@@ -27,17 +30,17 @@ public class CheckAnswer implements Runnable {
 
     @Override
     public void run() {
-        File file = new File(Path.PATH_PRIVATE_KEYS+task.getId()+".pem");
+        File file = new File(Path.PATH_PRIVATE_KEYS + task.getId() + ".pem");
         try {
-            String decrypt = Cryptography.decrypt(Cryptography.PrivateKey(file),encrypt, task.getProvider());
+            String decrypt = Cryptography.decrypt(Cryptography.PrivateKey(file), encrypt, task.getProvider());
             System.out.println(decrypt);
-            if(decrypt.equals(task.getDataKey())){
-                callBack.checkAnswerCallBack(CallBackNotifications.FinishInitData, StatusCheck.Success);
-            }else{
-                callBack.checkAnswerCallBack(CallBackNotifications.FinishInitData, StatusCheck.Fail);
+            if (decrypt.equals(task.getDataKey())) {
+                callBack.checkAnswerCallBack(CallBackNotifications.ResultCheckAnswer, StatusCheck.Success);
+            } else {
+                callBack.checkAnswerCallBack(CallBackNotifications.ResultCheckAnswer, StatusCheck.Fail);
             }
         } catch (Exception e) {
-            callBack.checkAnswerCallBack(CallBackNotifications.FinishInitData, StatusCheck.Error);
+            callBack.checkAnswerCallBack(CallBackNotifications.ResultCheckAnswer, StatusCheck.Error);
             e.printStackTrace();
         }
     }
