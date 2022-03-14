@@ -102,6 +102,12 @@ public class App implements Generator.CallBack, CheckAnswer.CallBack, Storage.Ca
 
     @Override
     public void generatorCallBack(CallBackNotifications callBackNotifications, Object obj) {
+        switch (callBackNotifications){
+            case CreateQuestions:{
+                callbackCheckAnswer.appCallbackCheckAnswer(callBackNotifications, obj);
+                break;
+            }
+        }
         callbackGenerate.appCallbackGenerate(callBackNotifications, obj);
     }
 
