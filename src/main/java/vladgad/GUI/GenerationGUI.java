@@ -21,6 +21,7 @@ public class GenerationGUI implements App.CallbackGenerate {
     private JLabel infoLabel;
     private JTextArea crtTextArea;
     private JButton saveClipboardCrtButton;
+    private JButton saveClipboardDataButton;
     private JButton generateTaskButton;
     private JButton goCheckAnswerButton;
     private App app;
@@ -103,6 +104,7 @@ public class GenerationGUI implements App.CallbackGenerate {
         panel.setLayout(new GridBagLayout());
         panel.add(dataLabel, setGridBagSettings(GridBagConstraints.HORIZONTAL, 0, 0, 0.1f, 0f, new Insets(0, 50, 0, 0), GridBagConstraints.LINE_START));
         panel.add(textDataLabel, setGridBagSettings(GridBagConstraints.HORIZONTAL, 1, 0, 0.9f, 0f, new Insets(0, 0, 0, 5), GridBagConstraints.LINE_START));
+        panel.add(saveClipboardDataButton, setGridBagSettings(GridBagConstraints.NONE,1,0,1f,1f,2,1,new Insets(0,0,20,20),GridBagConstraints.LAST_LINE_END));
         return panel;
     }
 
@@ -165,6 +167,17 @@ public class GenerationGUI implements App.CallbackGenerate {
 
             }
         });
+        saveClipboardDataButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if(!textDataLabel.getText().isEmpty()){
+                    String myString = textDataLabel.getText();
+                    StringSelection stringSelection = new StringSelection(myString);
+                    Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+                    clipboard.setContents(stringSelection, null);
+                }
+            }
+        });
         generateTaskButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -184,12 +197,14 @@ public class GenerationGUI implements App.CallbackGenerate {
     private void initElements() {
         dataLabel = new JLabel("Строка шифрования: ");
         textDataLabel = new JTextField(80);
+        textDataLabel.setEditable(false);
         crtLabel = new JLabel("Сертификат: ");
         crtTextArea = new JTextArea(15, 50);
         crtTextArea.setLineWrap(true);
         crtTextArea.setWrapStyleWord(true);
         crtTextArea.setEditable(false);
         saveClipboardCrtButton = new JButton("Копировать сертификат");
+        saveClipboardDataButton = new JButton("Копировать строку");
         providerLabel = new JLabel("Провайдер: ");
         textProviderLabel = new JLabel();
         infoLabel = new JLabel("<html>Строка1<br>Строка2<br>Строка 3</html>");
