@@ -81,6 +81,7 @@ public class Storage implements Runnable {
 
     @Override
     public void run() {
+        tasks.clear();
         for (final File fileEntry : new File(Path.PATH_SAVE_TASKS).listFiles())
             tasks.add(readTaskFile(fileEntry));
         callBack.storageCallBack(CallBackNotifications.UpdateOpenTasks, tasks);

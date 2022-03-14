@@ -92,6 +92,7 @@ public class CheckAnswerGUI implements App.CallbackCheckAnswer {
     }
     public void setVisible(boolean visible){
         mainFrame.setVisible(visible);
+        app.updateTask();
     }
     private void buttonJob() {
 
@@ -198,6 +199,7 @@ public class CheckAnswerGUI implements App.CallbackCheckAnswer {
         System.out.println("Check " + callBackNotifications);
         switch (callBackNotifications) {
             case UpdateOpenTasks: {
+                taskComboBox.removeAllItems();
                 String[] s = (String[]) obj;
                 taskComboBox.setModel(new DefaultComboBoxModel<>(s));
                 break;
