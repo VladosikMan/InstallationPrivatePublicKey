@@ -22,6 +22,7 @@ public class GenerationGUI implements App.Callback {
     private JTextArea crtTextArea;
     private JButton saveClipboardCrtButton;
     private JButton generateTaskButton;
+    private JButton goCheckAnswerButton;
     private App app;
 
 
@@ -100,9 +101,6 @@ public class GenerationGUI implements App.Callback {
 
     private JPanel fillTaskName(JPanel panel) {
         panel.setLayout(new GridBagLayout());
-        dataLabel = new JLabel("Строка шифрования: ");
-        textDataLabel = new JTextField(80);
-
         panel.add(dataLabel, setGridBagSettings(GridBagConstraints.HORIZONTAL, 0, 0, 0.1f, 0f, new Insets(0, 50, 0, 0), GridBagConstraints.LINE_START));
         panel.add(textDataLabel, setGridBagSettings(GridBagConstraints.HORIZONTAL, 1, 0, 0.9f, 0f, new Insets(0, 0, 0, 5), GridBagConstraints.LINE_START));
         return panel;
@@ -110,13 +108,6 @@ public class GenerationGUI implements App.Callback {
 
     private JPanel fillTaskDataKey(JPanel panel) {
         panel.setLayout(new GridBagLayout());
-        crtLabel = new JLabel("Сертификат: ");
-        crtTextArea = new JTextArea(15, 50);
-        crtTextArea.setLineWrap(true);
-        crtTextArea.setWrapStyleWord(true);
-        crtTextArea.setEditable(true);
-        crtTextArea.setText("MIIC6zCCAdOgAwIBAgIEeNBUbzANBgkqhkiG9w0BAQUFADAlMSMwIQYDVQQDDBpC=");
-        saveClipboardCrtButton = new JButton("Копировать сертификат");
         panel.add(crtLabel, setGridBagSettings(GridBagConstraints.HORIZONTAL, 0, 0, 0.3f, 1f, new Insets(0, 50, 0, 0)));
         panel.add(crtTextArea, setGridBagSettings(GridBagConstraints.HORIZONTAL, 1, 0, 0.7f, 1f, new Insets(0, 0, 0, 5), GridBagConstraints.LINE_START));
         panel.add(saveClipboardCrtButton, setGridBagSettings(GridBagConstraints.NONE, 0, 1, 1f, 1f, 2, 1, new Insets(0, 0, 0, 20), GridBagConstraints.FIRST_LINE_END));
@@ -125,9 +116,6 @@ public class GenerationGUI implements App.Callback {
 
     private JPanel fillTaskProvider(JPanel panel) {
         panel.setLayout(new GridBagLayout());
-        providerLabel = new JLabel("Провайдер: ");
-        textProviderLabel = new JLabel("Тут будет название провайдера");
-
         panel.add(providerLabel, setGridBagSettings(GridBagConstraints.HORIZONTAL, 0, 0, 0.3f, 0f, new Insets(0, 50, 0, 0), GridBagConstraints.LINE_START));
         panel.add(textProviderLabel, setGridBagSettings(GridBagConstraints.HORIZONTAL, 1, 0, 0.7f, 0f));
         return panel;
@@ -156,11 +144,9 @@ public class GenerationGUI implements App.Callback {
 
     private JPanel fillFuncPanel(JPanel panel) {
         panel.setLayout(new GridBagLayout());
-        infoLabel = new JLabel("<html>Строка1<br>Строка2<br>Строка 3</html>");
-        generateTaskButton = new JButton("Сгенерировать задание");
-
-        panel.add(infoLabel, setGridBagSettings(GridBagConstraints.NONE, 0, 0, 1f, 0.8f));
+        panel.add(infoLabel, setGridBagSettings(GridBagConstraints.NONE, 0, 0, 1f, 0.7f));
         panel.add(generateTaskButton, setGridBagSettings(GridBagConstraints.NONE, 0, 1, 1f, 0.2f));
+        panel.add(goCheckAnswerButton, setGridBagSettings(GridBagConstraints.NONE, 0, 2, 1f, 0.1f));
 
         return panel;
     }
@@ -186,21 +172,43 @@ public class GenerationGUI implements App.Callback {
                 app.generate();
             }
         });
+        goCheckAnswerButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                mainFrame.dispose();
+                app.startCheckAnswerGUI();
+            }
+        });
 
     }
+    private void initElements(){
+        dataLabel = new JLabel("Строка шифрования: ");
+        textDataLabel = new JTextField(80);
+        crtLabel = new JLabel("Сертификат: ");
+        crtTextArea = new JTextArea(15, 50);
+        crtTextArea.setLineWrap(true);
+        crtTextArea.setWrapStyleWord(true);
+        crtTextArea.setEditable(false);
+        saveClipboardCrtButton = new JButton("Копировать сертификат");
+        providerLabel = new JLabel("Провайдер: ");
+        textProviderLabel = new JLabel("Тут будет название провайдера");
+        infoLabel = new JLabel("<html>Строка1<br>Строка2<br>Строка 3</html>");
+        generateTaskButton = new JButton("Сгенерировать задание");
+        goCheckAnswerButton = new JButton("Проверить задание");
+    }
 
-    public void createGUI() {
-        app = new App();
+    public GenerationGUI(){
+        initElements();
+    }
+    public void createGUI(App app) {
+        this.app = app;
         app.registerCallBack(this);
-        
+
         mainFrame = new JFrame("Генератор заданий");
         mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         mainFrame.setSize(900, 600);
         mainFrame.setLocation(500, 50);
-
-
         mainFrame.setResizable(true);
-
 
         JPanel mainPanel = new JPanel();
         mainPanel.setLayout(new GridBagLayout());
@@ -215,7 +223,6 @@ public class GenerationGUI implements App.Callback {
         JPanel funcPanel = new JPanel();
         funcPanel.setBackground(new Color(0, 0, 255));
         funcPanel = fillFuncPanel(funcPanel);
-
 
         mainPanel.add(funcPanel, setGridBagSettings(GridBagConstraints.BOTH, 1, 0, 0.4f, 1));
 
