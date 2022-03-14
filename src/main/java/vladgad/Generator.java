@@ -43,7 +43,7 @@ public class Generator implements Runnable {
                 que = getInformationFromFile(Path.PATH_QUE_1);
                 que2 = getInformationFromFile(Path.PATH_QUE_2);
                 que3 = getInformationFromFile(Path.PATH_QUE_3);
-                callBack.generatorCallBack(CallBackNotifications.FinishInitData, null);
+                //callBack.generatorCallBack(CallBackNotifications.FinishInitData, null);
             }
         }).start();
     }
