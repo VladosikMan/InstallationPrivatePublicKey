@@ -89,27 +89,27 @@ public class CheckAnswerGUI implements App.Callback {
 
         buttonJob();
         mainFrame.setContentPane(mainPanel);
-        mainFrame.setVisible(true);
     }
-
+    public void setVisible(boolean visible){
+        mainFrame.setVisible(visible);
+    }
     private void buttonJob() {
 
         checkAnswerButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                app.createQuestions();
-//                if(!textEncryptTextArea.getText().isEmpty()){
-//                    app.checkAnswer(taskComboBox.getItemAt(taskComboBox.getSelectedIndex()),textEncryptTextArea.getText());
-//                }else{
-//                    appCallback(CallBackNotifications.EmptyTextArea, null);
-//                }
+                if (!textEncryptTextArea.getText().isEmpty()) {
+                    app.checkAnswer(taskComboBox.getItemAt(taskComboBox.getSelectedIndex()), textEncryptTextArea.getText());
+                } else {
+                    appCallback(CallBackNotifications.EmptyTextArea, null);
+                }
             }
         });
         goGenerateButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 // запустить процедуру генерации задачи
-                mainFrame.dispose();
+                app.startGenerationGUI();
             }
         });
 
@@ -119,7 +119,7 @@ public class CheckAnswerGUI implements App.Callback {
         initElements();
     }
 
-    private void initElements(){
+    private void initElements() {
         textEncrytLabel = new JLabel("Зашифрованные данные в Base64");
         textEncryptTextArea = new JTextArea(5, 30);
         textEncryptTextArea.setLineWrap(true);
@@ -134,6 +134,7 @@ public class CheckAnswerGUI implements App.Callback {
         checkAnswerButton = new JButton("Проверить вариант");
         goGenerateButton = new JButton("Генерация задач");
     }
+
     private GridBagConstraints setGridBagSettings(int fill, int gridx, int gridy, float weightx, float weighty) {
         GridBagConstraints c = new GridBagConstraints();
         c.fill = fill;

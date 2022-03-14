@@ -1,5 +1,8 @@
 package vladgad;
 
+import vladgad.GUI.CheckAnswerGUI;
+import vladgad.GUI.GenerationGUI;
+
 import java.io.File;
 import java.util.ArrayList;
 
@@ -9,20 +12,42 @@ public class App implements Generator.CallBack, CheckAnswer.CallBack, Storage.Ca
     private Generator generator;
     private CheckAnswer checkAnswer;
     private Storage storage;
+    private GenerationGUI generationGUI;
+    private CheckAnswerGUI checkAnswerGUI;
+
 
 
     public App() {
         generator = new Generator();
         generator.registerCallBack(this);
-        generator.initialization();
+        initData();
 
         checkAnswer = new CheckAnswer();
         checkAnswer.registerCallBack(this);
+
         storage = new Storage();
         storage.registerCallBack(this);
 
+        generationGUI = new GenerationGUI();
+        generationGUI.createGUI(this);
+        generationGUI.setVisible(true);
+        checkAnswerGUI = new CheckAnswerGUI();
+        checkAnswerGUI.createGUI(this);
+
+
+    }
+    public void startGenerationGUI(){
+        generationGUI.setVisible(true);
+        checkAnswerGUI.setVisible(false);
+    }
+    public void startCheckAnswerGUI(){
+        generationGUI.setVisible(false);
+        checkAnswerGUI.setVisible(true);
     }
 
+    public void initData(){
+        generator.initialization();
+    }
     public void initTasks() {
         storage.initTasks();
     }

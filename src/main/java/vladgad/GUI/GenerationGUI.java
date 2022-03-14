@@ -175,7 +175,6 @@ public class GenerationGUI implements App.Callback {
         goCheckAnswerButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                mainFrame.dispose();
                 app.startCheckAnswerGUI();
             }
         });
@@ -225,10 +224,14 @@ public class GenerationGUI implements App.Callback {
         funcPanel = fillFuncPanel(funcPanel);
 
         mainPanel.add(funcPanel, setGridBagSettings(GridBagConstraints.BOTH, 1, 0, 0.4f, 1));
-
         buttonJob();
         mainFrame.setContentPane(mainPanel);
-        mainFrame.setVisible(true);
+
+    }
+
+
+    public void setVisible(boolean visible){
+        mainFrame.setVisible(visible);
     }
 
 
