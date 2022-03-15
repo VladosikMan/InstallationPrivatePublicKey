@@ -254,6 +254,7 @@ public class GenerationGUI implements App.CallbackGenerate {
 
 
         JPanel funcPanel = new JPanel();
+        funcPanel.setBackground(new Color(234,234,234, 200));
         funcPanel = fillFuncPanel(funcPanel);
 
         mainPanel.add(funcPanel, setGridBagSettings(GridBagConstraints.BOTH, 1, 0, 0.2f, 1));

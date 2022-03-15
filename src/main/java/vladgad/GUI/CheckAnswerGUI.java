@@ -5,6 +5,8 @@ import vladgad.CallBackNotifications;
 import vladgad.StatusCheck;
 
 import javax.swing.*;
+import javax.swing.text.DefaultStyledDocument;
+import javax.swing.text.Document;
 import java.awt.*;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.StringSelection;
@@ -26,6 +28,7 @@ public class CheckAnswerGUI implements App.CallbackCheckAnswer {
     private JLabel statusFuncLabel;
     private JButton checkAnswerButton;
     private JButton goGenerateButton;
+    private JScrollPane sp;
 
 
     private int noZero(int x) {
@@ -45,7 +48,7 @@ public class CheckAnswerGUI implements App.CallbackCheckAnswer {
     private JPanel fillCheckPanel(JPanel panel) {
         panel.setLayout(new GridBagLayout());
         panel.add(textEncrytLabel, setGridBagSettings(GridBagConstraints.NONE, 0, 0, 0.3f, 1f, new Insets(0, 10, 0, 0), GridBagConstraints.LINE_START));
-        panel.add(textEncryptTextArea, setGridBagSettings(GridBagConstraints.NONE, 1, 0, 0.7f, 1, GridBagConstraints.LINE_START));
+        panel.add(sp, setGridBagSettings(GridBagConstraints.NONE, 1, 0, 0.7f, 1, GridBagConstraints.LINE_START));
         panel.add(textQueLabel, setGridBagSettings(GridBagConstraints.NONE, 0, 1, 0.3f, 1f, new Insets(0, 10, 0, 0), GridBagConstraints.LINE_START));
         panel.add(queLabel, setGridBagSettings(GridBagConstraints.NONE, 1, 1, 0.7f, 1f, new Insets(0, 10, 0, 0), GridBagConstraints.LINE_START));
         return panel;
@@ -56,7 +59,7 @@ public class CheckAnswerGUI implements App.CallbackCheckAnswer {
         app.updateTask();
         panel.add(textComboLabel, setGridBagSettings(GridBagConstraints.NONE, 0, 0, 1f, 0.1f));
         panel.add(taskComboBox, setGridBagSettings(GridBagConstraints.NONE, 0, 1, 1f, 0.2f));
-        panel.add(infoFuncLabel, setGridBagSettings(GridBagConstraints.NONE, 0, 2, 1f, 0.2f));
+        panel.add(infoFuncLabel, setGridBagSettings(GridBagConstraints.HORIZONTAL, 0, 2, 1f, 0.6f, new Insets(0,5,0,0), GridBagConstraints.LINE_START));
         panel.add(statusFuncLabel, setGridBagSettings(GridBagConstraints.NONE, 0, 3, 1f, 0.1f));
         panel.add(checkAnswerButton, setGridBagSettings(GridBagConstraints.NONE, 0, 4, 1f, 0.3f));
         panel.add(goGenerateButton, setGridBagSettings(GridBagConstraints.NONE, 0, 5, 1f, 0.1f));
@@ -75,14 +78,14 @@ public class CheckAnswerGUI implements App.CallbackCheckAnswer {
         mainPanel.setLayout(new GridBagLayout());
 
         JPanel checkPanel = new JPanel();
-        checkPanel.setBackground(new Color(255, 0, 0));
+        //checkPanel.setBackground(new Color(255, 0, 0));
         checkPanel = fillCheckPanel(checkPanel);
 
 
         mainPanel.add(checkPanel, setGridBagSettings(GridBagConstraints.BOTH, 0, 0, 0.6f, 1));
 
         JPanel funcPanel = new JPanel();
-        funcPanel.setBackground(new Color(0, 0, 255));
+        funcPanel.setBackground(new Color(234,234,234, 200));
         funcPanel = fillFuncPanel(funcPanel);
 
         mainPanel.add(funcPanel, setGridBagSettings(GridBagConstraints.BOTH, 1, 0, 0.4f, 1));
@@ -90,10 +93,13 @@ public class CheckAnswerGUI implements App.CallbackCheckAnswer {
         buttonJob();
         mainFrame.setContentPane(mainPanel);
     }
-    public void setVisible(boolean visible){
+
+    public void setVisible(boolean visible) {
         mainFrame.setVisible(visible);
         app.updateTask();
+        clearElements();
     }
+
     private void buttonJob() {
 
         checkAnswerButton.addActionListener(new ActionListener() {
@@ -126,14 +132,25 @@ public class CheckAnswerGUI implements App.CallbackCheckAnswer {
         textEncryptTextArea.setLineWrap(true);
         textEncryptTextArea.setWrapStyleWord(true);
         textEncryptTextArea.setEditable(true);
+        sp = new JScrollPane(textEncryptTextArea);
+        sp.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
         textQueLabel = new JLabel("Вопросы к защите");
-        queLabel = new JLabel("<html>1) Crt формат <br> 2) CBC режим шифрования <br>3) Что такое SSL/TCL</html>");
+        queLabel = new JLabel();
         textComboLabel = new JLabel("Список вариантов");
         taskComboBox = new JComboBox<>();
-        infoFuncLabel = new JLabel("<html>Строка1<br>Строка2<br>Строка 3</html>");
+        infoFuncLabel = new JLabel("<html>\n" +
+                "1) Выберите из списка свой вариант<br>2) Внести в текстовое поле<br/>зашифрованную строку<br>" +
+                "3) Дождитесь результата<br/>" +
+                "4) Заберите вопросы</html>");
         statusFuncLabel = new JLabel();
         checkAnswerButton = new JButton("Проверить вариант");
         goGenerateButton = new JButton("Генерация задач");
+    }
+
+    public void clearElements() {
+        textEncryptTextArea.setText("");
+        queLabel.setText("");
+
     }
 
     private GridBagConstraints setGridBagSettings(int fill, int gridx, int gridy, float weightx, float weighty) {
@@ -235,7 +252,7 @@ public class CheckAnswerGUI implements App.CallbackCheckAnswer {
                 queLabel.setText(obj.toString());
                 break;
             }
-            case FinishDeleteTask:{
+            case FinishDeleteTask: {
                 app.updateTask();
                 break;
             }
