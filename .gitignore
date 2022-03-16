@@ -36,3 +36,4 @@ serverNode/node_modules
 build
 task.txt
 data
+out
