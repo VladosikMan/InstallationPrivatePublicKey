@@ -4,6 +4,7 @@ import java.io.*;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Random;
 
 public class Generator implements Runnable {
     //class for generation variant task
@@ -73,16 +74,17 @@ public class Generator implements Runnable {
     }
 
     private String createIdTask(String name) {
-        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(Calendar.getInstance().getTime());
-        System.out.println("1");
-        System.out.println(timeStamp);
-        System.out.println("2");
-        return name + "_" + timeStamp;
+        //String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(Calendar.getInstance().getTime());
+        return name + "_" + generateRandomIdString(8);
     }
 
     private String createNameCert() {
         //name from file
         return names.get(0 + (int) (Math.random() * names.size()));
+    }
+    private String createNameVariant(){
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(Calendar.getInstance().getTime());
+        return generateRandomIdString(5) + timeStamp;
     }
 
     private String createKeyData() {
@@ -108,11 +110,13 @@ public class Generator implements Runnable {
     public void run() {
         Task task = new Task();
         String name = createNameCert();
-        task.setName(name);
-        System.out.println(name);
-        callBack.generatorCallBack(CallBackNotifications.CreateNameTask, name);
 
-        String id = createIdTask(task.getName());
+        String variant = createNameVariant();
+        task.setName(variant);
+
+        callBack.generatorCallBack(CallBackNotifications.CreateNameTask, variant);
+
+        String id = createIdTask(name);
         task.setId(id);
 
         String data = createKeyData();
@@ -127,7 +131,16 @@ public class Generator implements Runnable {
 
         storage.saveTask(task);
 
+
+
         String crt = Cryptography.generatePair(task);
+
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                storage.saveVariant(task, crt);
+            }
+        }).start();
         callBack.generatorCallBack(CallBackNotifications.CreateCrtTask, crt);
     }
 
@@ -136,4 +149,20 @@ public class Generator implements Runnable {
                 "<br>" + que3.get(0 + (int) (Math.random() * que3.size())) + "</html>";
         callBack.generatorCallBack(CallBackNotifications.CreateQuestions, s);
     }
+
+    private String generateRandomIdString(int targetStringLength) {
+        int leftLimit = 48; // numeral '0'
+        int rightLimit = 122; // letter 'z'
+
+        Random random = new Random();
+
+        String generatedString = random.ints(leftLimit, rightLimit + 1)
+                .filter(i -> (i <= 57 || i >= 65) && (i <= 90 || i >= 97))
+                .limit(targetStringLength)
+                .collect(StringBuilder::new, StringBuilder::appendCodePoint, StringBuilder::append)
+                .toString();
+        return generatedString;
+    }
+
+
 }

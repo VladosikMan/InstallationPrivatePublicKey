@@ -37,6 +37,7 @@ public class CheckAnswer implements Runnable {
             if (decrypt.equals(task.getDataKey())) {
                 callBack.checkAnswerCallBack(CallBackNotifications.ResultCheckAnswer, StatusCheck.Success);
                 callBack.checkAnswerCallBack(CallBackNotifications.DeleteTask, task.getId());
+                callBack.checkAnswerCallBack(CallBackNotifications.DeleteVariant, task.getName());
             } else {
                 callBack.checkAnswerCallBack(CallBackNotifications.ResultCheckAnswer, StatusCheck.Fail);
             }

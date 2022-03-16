@@ -9,7 +9,6 @@ import javax.crypto.Cipher;
 import javax.security.auth.x500.X500Principal;
 import java.io.*;
 import java.math.BigInteger;
-import java.net.URLEncoder;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.security.*;
@@ -178,11 +177,11 @@ public class Cryptography {
     }
 
     public static void main(String[] args) throws FileNotFoundException, UnsupportedEncodingException {
-        String path = new String((Path.PATH_CERT + "m.crt"));
+        String path = new String((Path.PATH_CERT + "k.crt"));
         File file = new File(path);
         InputStream targetStream = new FileInputStream(file);
         Certificate cert = getCert(targetStream);
-        String enc = Cryptography.encrypt(cert.getPublicKey(), "Стремитесь не к успеху, а к ценностям, которые он дает", "RSA/ECB/OAEPWithSHA-1AndMGF1Padding");
+        String enc = Cryptography.encrypt(cert.getPublicKey(), "Элементарно, Ватсон", "RSA/ECB/PKCS1Padding");
         System.out.println(enc);
     }
 

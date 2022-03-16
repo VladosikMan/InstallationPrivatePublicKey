@@ -2,8 +2,6 @@ package vladgad;
 
 import vladgad.GUI.CheckAnswerGUI;
 import vladgad.GUI.GenerationGUI;
-
-import java.io.File;
 import java.util.ArrayList;
 
 public class App implements Generator.CallBack, CheckAnswer.CallBack, Storage.CallBack {
@@ -118,6 +116,10 @@ public class App implements Generator.CallBack, CheckAnswer.CallBack, Storage.Ca
         switch (callBackNotifications){
             case DeleteTask:{
                 storage.deleteFiles(obj.toString());
+                break;
+            }
+            case DeleteVariant:{
+                storage.deleteVariant(obj.toString());
                 break;
             }
 

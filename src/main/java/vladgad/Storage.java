@@ -28,6 +28,19 @@ public class Storage implements Runnable {
         }
     }
 
+    public void saveVariant(Task task, String crt) {
+        String var = "Ваш вариант - " + task.getName() + "\n" +
+                "Строка - " + task.getDataKey() + "\n" +
+                "Провайдер - " + task.getProvider() + "\n" +
+                "Сертификат - " + "\n" + crt;
+        String fpath = Path.PATH_SAVE_VARIANTS + task.getName() + ".txt";
+        try {
+            saveFile(fpath, var);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     private void saveFile(String fpath, String data) throws IOException {
         File file = new File(fpath);
         BufferedWriter writer = new BufferedWriter(new FileWriter(file, true));
@@ -114,6 +127,19 @@ public class Storage implements Runnable {
                 callBack.storageCallBack(CallBackNotifications.FinishDeleteTask, null);
             }
         }).start();
+    }
 
+    public void deleteVariant(String variant) {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                File file = new File(Path.PATH_SAVE_VARIANTS + variant + ".txt");
+                if (file.delete()) {
+                    System.out.println("File deleted successfully");
+                } else {
+                    System.out.println("Failed to delete the file");
+                }
+            }
+        }).start();
     }
 }

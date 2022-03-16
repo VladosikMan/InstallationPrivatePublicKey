@@ -2,7 +2,6 @@ package vladgad.GUI;
 
 import vladgad.App;
 import vladgad.CallBackNotifications;
-import vladgad.Generator;
 
 import javax.swing.*;
 import java.awt.*;
@@ -206,9 +205,10 @@ public class GenerationGUI implements App.CallbackGenerate {
 
         Color labelColor = new Color(223, 255,0, 215);
         Color areaColor = new Color(219, 210, 246, 150);
-
-
         Font font =  new Font("Courier", Font.ITALIC, 12);
+
+
+
         dataLabel = new JLabel("Строка шифрования: ");
         dataLabel.setForeground(labelColor);
         dataLabel.setFont(font);
@@ -305,11 +305,10 @@ public class GenerationGUI implements App.CallbackGenerate {
         System.out.println("Generate " + callBackNotifications);
         switch (callBackNotifications) {
             case CreateIdTask: {
-
                 break;
             }
             case CreateNameTask: {
-
+                System.out.println("Ваш вариант" + obj.toString());
                 break;
             }
             case CreateProviderTask: {

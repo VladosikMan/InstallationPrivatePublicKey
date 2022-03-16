@@ -9,4 +9,5 @@ public class Path {
     final static  String PATH_QUE_2 = "data/generate/questions/2.txt";
     final static  String PATH_QUE_3 = "data/generate/questions/3.txt";
     final static  String PATH_SAVE_TASKS = "data/tasks/";
+    final static  String PATH_SAVE_VARIANTS = "variants/";
 }
