@@ -9,6 +9,7 @@ import javax.crypto.Cipher;
 import javax.security.auth.x500.X500Principal;
 import java.io.*;
 import java.math.BigInteger;
+import java.net.URLEncoder;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.security.*;
@@ -71,7 +72,7 @@ public class Cryptography {
         outputStream.close();
     }
 
-    private static PrivateKey readPrivateKey(File file) throws Exception {
+    public static PrivateKey PrivateKey(File file) throws Exception {
         String key = new String(Files.readAllBytes(file.toPath()), Charset.defaultCharset());
 
         String privateKeyPEM = key
@@ -143,9 +144,9 @@ public class Cryptography {
         return crt;
     }
 
-    public static String encrypt(PublicKey publicKey, String plaintext, Task task) {
+    public static String encrypt(PublicKey publicKey, String plaintext, String provider) {
         try {
-            Cipher cipher = Cipher.getInstance(task.getProvider());
+            Cipher cipher = Cipher.getInstance(provider);
             cipher.init(Cipher.ENCRYPT_MODE, publicKey);
             return Base64.encodeBase64String(cipher.doFinal(plaintext.getBytes()));
         } catch (Exception e) {
@@ -153,9 +154,9 @@ public class Cryptography {
         }
     }
 
-    public static String decrypt(PrivateKey privateKey, String plaintext, Task task) {
+    public static String decrypt(PrivateKey privateKey, String plaintext, String provider) {
         try {
-            Cipher cipher = Cipher.getInstance(task.getProvider());
+            Cipher cipher = Cipher.getInstance(provider);
             cipher.init(Cipher.DECRYPT_MODE, privateKey);
             return new String(cipher.doFinal(Base64.decodeBase64(plaintext)), "UTF-8");
         } catch (Exception e) {
@@ -175,4 +176,14 @@ public class Cryptography {
         }
         return cert;
     }
+
+    public static void main(String[] args) throws FileNotFoundException, UnsupportedEncodingException {
+        String path = new String((Path.PATH_CERT + "m.crt"));
+        File file = new File(path);
+        InputStream targetStream = new FileInputStream(file);
+        Certificate cert = getCert(targetStream);
+        String enc = Cryptography.encrypt(cert.getPublicKey(), "Стремитесь не к успеху, а к ценностям, которые он дает", "RSA/ECB/OAEPWithSHA-1AndMGF1Padding");
+        System.out.println(enc);
+    }
+
 }
