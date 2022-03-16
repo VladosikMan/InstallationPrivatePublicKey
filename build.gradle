@@ -1,7 +1,10 @@
 plugins {
     id 'groovy'
+    id 'application'
 }
-
+application {
+    mainClassName = 'vladgad.GUI.Main'
+}
 group 'org.vladgad'
 version '1.0-SNAPSHOT'
 
@@ -14,4 +17,14 @@ dependencies {
     testCompile group: 'junit', name: 'junit', version: '4.12'
     implementation group: 'org.bouncycastle', name: 'bcprov-jdk16', version: '1.45'
     implementation 'commons-codec:commons-codec:1.15'
+}
+jar {
+    manifest {
+        attributes "Main-Class": "vladgad.GUI.Main"
+    }
+
+    from {
+        configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
+    }
+    exclude 'META-INF/*.RSA', 'META-INF/*.SF','META-INF/*.DSA'
 }
