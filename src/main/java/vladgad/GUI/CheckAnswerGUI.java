@@ -5,14 +5,9 @@ import vladgad.CallBackNotifications;
 import vladgad.StatusCheck;
 
 import javax.swing.*;
-import javax.swing.text.DefaultStyledDocument;
-import javax.swing.text.Document;
 import java.awt.*;
-import java.awt.datatransfer.Clipboard;
-import java.awt.datatransfer.StringSelection;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.ArrayList;
 
 public class CheckAnswerGUI implements App.CallbackCheckAnswer {
     private JFrame mainFrame;
@@ -47,6 +42,10 @@ public class CheckAnswerGUI implements App.CallbackCheckAnswer {
 
     private JPanel fillCheckPanel(JPanel panel) {
         panel.setLayout(new GridBagLayout());
+        Color colorPane = new Color(23,4,4);
+        panel.setBackground(colorPane);
+
+
         panel.add(textEncrytLabel, setGridBagSettings(GridBagConstraints.NONE, 0, 0, 0.3f, 1f, new Insets(0, 10, 0, 0), GridBagConstraints.LINE_START));
         panel.add(sp, setGridBagSettings(GridBagConstraints.NONE, 1, 0, 0.7f, 1, GridBagConstraints.LINE_START));
         panel.add(textQueLabel, setGridBagSettings(GridBagConstraints.NONE, 0, 1, 0.3f, 1f, new Insets(0, 10, 0, 0), GridBagConstraints.LINE_START));
@@ -56,6 +55,9 @@ public class CheckAnswerGUI implements App.CallbackCheckAnswer {
 
     private JPanel fillFuncPanel(JPanel panel) {
         panel.setLayout(new GridBagLayout());
+        Color colorPane =  new Color(57, 15, 173,183);
+        panel.setBackground(colorPane);
+
         app.updateTask();
         panel.add(textComboLabel, setGridBagSettings(GridBagConstraints.NONE, 0, 0, 1f, 0.1f));
         panel.add(taskComboBox, setGridBagSettings(GridBagConstraints.NONE, 0, 1, 1f, 0.2f));
@@ -127,15 +129,37 @@ public class CheckAnswerGUI implements App.CallbackCheckAnswer {
     }
 
     private void initElements() {
+
+        Color labelColor = new Color(223, 255,0, 215);
+        Color areaColor = new Color(219, 210, 246, 150);
+        Font font =  new Font("Courier", Font.ITALIC, 12);
+
+
         textEncrytLabel = new JLabel("Зашифрованные данные в Base64");
+        textEncrytLabel.setForeground(labelColor);
+        textEncrytLabel.setFont(font);
+
         textEncryptTextArea = new JTextArea(5, 30);
         textEncryptTextArea.setLineWrap(true);
         textEncryptTextArea.setWrapStyleWord(true);
         textEncryptTextArea.setEditable(true);
+        textEncryptTextArea.setBackground(areaColor);
+
+
+
         sp = new JScrollPane(textEncryptTextArea);
         sp.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
+
         textQueLabel = new JLabel("Вопросы к защите");
+        textQueLabel.setForeground(labelColor);
+        textQueLabel.setFont(font);
+
+
         queLabel = new JLabel();
+        queLabel.setForeground(labelColor);
+        queLabel.setFont(font);
+
+
         textComboLabel = new JLabel("Список вариантов");
         taskComboBox = new JComboBox<>();
         infoFuncLabel = new JLabel("<html>\n" +
