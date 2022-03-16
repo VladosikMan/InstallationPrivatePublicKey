@@ -4,11 +4,14 @@ import vladgad.App;
 import vladgad.CallBackNotifications;
 
 import javax.swing.*;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 import java.awt.*;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.StringSelection;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.beans.PropertyChangeListener;
 
 public class GenerationGUI implements App.CallbackGenerate {
     private JFrame mainFrame;
@@ -27,6 +30,9 @@ public class GenerationGUI implements App.CallbackGenerate {
     private JButton goCheckAnswerButton;
     private App app;
     private JScrollPane sp;
+    private JSlider queVariantsSlider;
+    private JTextField queVariantsField;
+    private JProgressBar progressBar;
 
 
     private int noZero(int x) {
@@ -103,6 +109,7 @@ public class GenerationGUI implements App.CallbackGenerate {
     }
 
     private JPanel fillTaskName(JPanel panel) {
+
         panel.setLayout(new GridBagLayout());
         panel.add(dataLabel, setGridBagSettings(GridBagConstraints.NONE, 0, 0, 0.05f, 1f, new Insets(20, 10, 0, 0), GridBagConstraints.FIRST_LINE_START));
         panel.add(textDataLabel, setGridBagSettings(GridBagConstraints.HORIZONTAL, 1, 0, 0.95f, 1f, new Insets(20, 0, 0, 40), GridBagConstraints.FIRST_LINE_START));
@@ -154,13 +161,18 @@ public class GenerationGUI implements App.CallbackGenerate {
 
         panel.setBackground(colorFunc);
         panel.add(funcLabel, setGridBagSettings(GridBagConstraints.NONE, 0, 0, 1f, 0.1f));
-        panel.add(infoLabel, setGridBagSettings(GridBagConstraints.HORIZONTAL, 0, 1, 1f, 0.6f, new Insets(0, 5, 0, 0), GridBagConstraints.LINE_START));
-        panel.add(generateTaskButton, setGridBagSettings(GridBagConstraints.NONE, 0, 2, 1f, 0.25f));
-        panel.add(goCheckAnswerButton, setGridBagSettings(GridBagConstraints.NONE, 0, 3, 1f, 0.05f));
+        panel.add(infoLabel, setGridBagSettings(GridBagConstraints.HORIZONTAL, 0, 1, 1f, 0.4f, new Insets(0, 5, 0, 0), GridBagConstraints.LINE_START));
+        panel.add(queVariantsSlider,setGridBagSettings(GridBagConstraints.HORIZONTAL, 0,2,0.7f,0.1f, new Insets(0,5,0,0), GridBagConstraints.LINE_START));
+        panel.add(queVariantsField,setGridBagSettings(GridBagConstraints.HORIZONTAL, 1,2,0.3f,0.1f, new Insets(0,0,0,5), GridBagConstraints.LINE_START));
+
+        panel.add(progressBar, setGridBagSettings(GridBagConstraints.HORIZONTAL, 0, 3, 1f, 0.1f,new Insets(0,10,0,0),  GridBagConstraints.CENTER));
+
+        panel.add(generateTaskButton, setGridBagSettings(GridBagConstraints.NONE, 0, 4, 1f, 0.25f));
+        panel.add(goCheckAnswerButton, setGridBagSettings(GridBagConstraints.NONE, 0, 5, 1f, 0.05f));
         return panel;
     }
 
-    private void buttonJob() {
+    private void elementsJob() {
 
         saveClipboardCrtButton.addActionListener(new ActionListener() {
             @Override
@@ -198,8 +210,37 @@ public class GenerationGUI implements App.CallbackGenerate {
                 app.startCheckAnswerGUI();
             }
         });
+        queVariantsSlider.addChangeListener(new ChangeListener() {
+            @Override
+            public void stateChanged(ChangeEvent e) {
+                try{
+                    queVariantsField.setText(String.valueOf(queVariantsSlider.getValue()));
+                }catch (NumberFormatException exception) {
+                    exception.printStackTrace();
+                    System.out.println("Error input");
+
+                }
+
+            }
+        });
+        queVariantsField.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+
+                try{
+                    queVariantsSlider.setValue(Integer.parseInt(queVariantsField.getText()));
+                }catch (NumberFormatException exception) {
+                    exception.printStackTrace();
+                    System.out.println("Error input");
+                    queVariantsField.setText(String.valueOf(queVariantsSlider.getValue()));
+                }
+            }
+        });
+
+
 
     }
+
 
     private void initElements() {
 
@@ -251,6 +292,22 @@ public class GenerationGUI implements App.CallbackGenerate {
 
         generateTaskButton = new JButton("Сгенерировать задание");
         goCheckAnswerButton = new JButton("Проверить задание");
+
+        queVariantsSlider = new JSlider(1,31,1);
+        queVariantsField = new JTextField(3);
+
+        queVariantsSlider.setMajorTickSpacing(10);
+        queVariantsSlider.setMinorTickSpacing(2);
+        queVariantsSlider.setPaintTicks(true);
+
+        //queVariantsSlider.setBackground(new Color(57, 15, 173,183));
+        queVariantsSlider.setPaintLabels(true);
+        progressBar = new JProgressBar();
+        progressBar.setStringPainted(true);
+        progressBar.setMinimum(0);
+        progressBar.setMaximum(100);
+        progressBar.setValue(30);
+
     }
 
     public void clearElements() {
@@ -288,7 +345,7 @@ public class GenerationGUI implements App.CallbackGenerate {
         funcPanel = fillFuncPanel(funcPanel);
 
         mainPanel.add(funcPanel, setGridBagSettings(GridBagConstraints.BOTH, 1, 0, 0.2f, 1));
-        buttonJob();
+        elementsJob();
         mainFrame.setContentPane(mainPanel);
 
     }
