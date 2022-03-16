@@ -127,6 +127,7 @@ public class Generator implements Runnable {
         String provider = createProvide();
         task.setProvider(provider);
         callBack.generatorCallBack(CallBackNotifications.CreateProviderTask, provider);
+        callBack.generatorCallBack(CallBackNotifications.CreateVariant, variant);
 
 
         storage.saveTask(task);

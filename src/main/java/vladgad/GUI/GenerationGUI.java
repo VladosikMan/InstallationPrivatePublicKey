@@ -320,6 +320,10 @@ public class GenerationGUI implements App.CallbackGenerate {
                 funcLabel.setText("Задача сгенерирована");
                 break;
             }
+            case CreateVariant:{
+                funcLabel.setText("<html>Задача сгенерированна" +"<br>"+ "Вариант - " + obj.toString()+ "</html>");
+                break;
+            }
             case FinishInitData: {
                 funcLabel.setText("Данные готовы");
                 System.out.println("Finish Init Data");

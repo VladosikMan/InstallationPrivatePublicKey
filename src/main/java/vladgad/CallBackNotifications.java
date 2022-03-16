@@ -12,6 +12,7 @@ public enum CallBackNotifications {
     EmptyTextArea,
     CreateQuestions,
     DeleteTask,
+    CreateVariant,
     DeleteVariant,
     FinishDeleteTask
 }
