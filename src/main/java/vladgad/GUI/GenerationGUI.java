@@ -129,17 +129,17 @@ public class GenerationGUI implements App.CallbackGenerate {
     private JPanel fillTaskPanel(JPanel panel) {
         panel.setLayout(new GridBagLayout());
 
-
+        Color color = new Color(48,0,12,204);
         JPanel j1 = new JPanel();
-        j1.setBackground(new Color(255, 0, 255));
+        j1.setBackground(color);
         j1 = fillTaskName(j1);
 
         JPanel j2 = new JPanel();
-        j2.setBackground(new Color(255, 255, 0));
+        j2.setBackground(color);
         j2 = fillTaskDataKey(j2);
 
         JPanel j3 = new JPanel();
-        j3.setBackground(new Color(255, 255, 255));
+        j3.setBackground(color);
         j3 = fillTaskProvider(j3);
 
         panel.add(j1, setGridBagSettings(GridBagConstraints.BOTH, 0, 0, 1f, 0.10f));
@@ -151,8 +151,11 @@ public class GenerationGUI implements App.CallbackGenerate {
 
     private JPanel fillFuncPanel(JPanel panel) {
         panel.setLayout(new GridBagLayout());
+        Color colorFunc = new Color(57, 15, 173,183);
+
+        panel.setBackground(colorFunc);
         panel.add(funcLabel, setGridBagSettings(GridBagConstraints.NONE, 0, 0, 1f, 0.1f));
-        panel.add(infoLabel, setGridBagSettings(GridBagConstraints.HORIZONTAL, 0, 1, 1f, 0.6f, new Insets(0,5,0,0), GridBagConstraints.LINE_START));
+        panel.add(infoLabel, setGridBagSettings(GridBagConstraints.HORIZONTAL, 0, 1, 1f, 0.6f, new Insets(0, 5, 0, 0), GridBagConstraints.LINE_START));
         panel.add(generateTaskButton, setGridBagSettings(GridBagConstraints.NONE, 0, 2, 1f, 0.25f));
         panel.add(goCheckAnswerButton, setGridBagSettings(GridBagConstraints.NONE, 0, 3, 1f, 0.05f));
         return panel;
@@ -200,25 +203,52 @@ public class GenerationGUI implements App.CallbackGenerate {
     }
 
     private void initElements() {
+
+        Color labelColor = new Color(223, 255,0, 215);
+        Color areaColor = new Color(219, 210, 246, 150);
+
+
+        Font font =  new Font("Courier", Font.ITALIC, 12);
         dataLabel = new JLabel("Строка шифрования: ");
+        dataLabel.setForeground(labelColor);
+        dataLabel.setFont(font);
+
         textDataLabel = new JTextField(80);
         textDataLabel.setEditable(false);
-        funcLabel = new JLabel();
-        crtLabel = new JLabel("Сертификат: ");
-        crtTextArea = new JTextArea(17, 30);
+        textDataLabel.setBackground(areaColor);
 
+
+        funcLabel = new JLabel();
+        funcLabel.setFont(font);
+
+
+        crtLabel = new JLabel("Сертификат: ");
+        crtLabel.setForeground(labelColor);
+        crtLabel.setFont(font);
+
+        crtTextArea = new JTextArea(17, 30);
         crtTextArea.setLineWrap(true);
         crtTextArea.setWrapStyleWord(true);
         crtTextArea.setEditable(false);
+        crtTextArea.setBackground(areaColor);
+
         sp = new JScrollPane(crtTextArea);
         sp.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
 
         saveClipboardCrtButton = new JButton("Копировать сертификат");
         saveClipboardDataButton = new JButton("Копировать строку");
+
         providerLabel = new JLabel("Провайдер: ");
+        providerLabel.setForeground(labelColor);
+        providerLabel.setFont(font);
+
         textProviderLabel = new JLabel();
+        textProviderLabel.setForeground(labelColor);
+        textProviderLabel.setFont(font);
         infoLabel = new JLabel("<html>1) Сгенериуйте задание<br>2) Скопируйте строку шифрования, сертификат и параметры шифрования<br>" +
                 "3) С помощью вашей программы закодируйте открытым ключом строку<br>4) Проверьте проделанную работу</html>");
+        infoLabel.setFont(font);
+
         generateTaskButton = new JButton("Сгенерировать задание");
         goCheckAnswerButton = new JButton("Проверить задание");
     }
@@ -247,14 +277,14 @@ public class GenerationGUI implements App.CallbackGenerate {
         mainPanel.setLayout(new GridBagLayout());
 
         JPanel taskPanel = new JPanel();
-        //taskPanel.setBackground(new Color(255, 0, 0));
+        taskPanel.setBackground(new Color(23, 4, 4));
         taskPanel = fillTaskPanel(taskPanel);
 
         mainPanel.add(taskPanel, setGridBagSettings(GridBagConstraints.BOTH, 0, 0, 0.8f, 1));
 
 
         JPanel funcPanel = new JPanel();
-        funcPanel.setBackground(new Color(234,234,234, 200));
+        funcPanel.setBackground(new Color(234, 234, 234, 200));
         funcPanel = fillFuncPanel(funcPanel);
 
         mainPanel.add(funcPanel, setGridBagSettings(GridBagConstraints.BOTH, 1, 0, 0.2f, 1));
