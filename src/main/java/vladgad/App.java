@@ -31,6 +31,7 @@ public class App implements Generator.CallBack, CheckAnswer.CallBack, Storage.Ca
         storage.registerCallBack(this);
 
 
+        Images.init();
 
     }
     public void startGUI(){

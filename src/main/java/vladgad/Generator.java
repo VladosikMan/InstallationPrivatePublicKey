@@ -145,8 +145,11 @@ public class Generator implements Runnable {
                     manyVariants += ("Вариант - " + i + "\n" + "Идентификатор варианта " + task.getName() + "\n" +
                             "Строка - " + task.getDataKey() + "\n" +
                             "Провайдер - " + task.getProvider() + "\n" +
-                            "Сертификат - " + "\n" + crt + "\n" + "-----------------------------------------------------------");
-                    callBack.generatorCallBack(CallBackNotifications.UpdateGenerateVariants, Math.round((100 / size)*i));
+                            "Сертификат - " + "\n" + crt + "\n"+ "\n" +
+                            Images.images[0 + (int) (Math.random() *Images.QUE_IM)]
+                            +
+                            "\n"+ "\n");
+                    callBack.generatorCallBack(CallBackNotifications.UpdateGenerateVariants, Math.round((100 / size) * i));
                     try {
                         Thread.sleep(50);
                     } catch (InterruptedException e) {

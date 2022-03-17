@@ -177,11 +177,11 @@ public class Cryptography {
     }
 
     public static void main(String[] args) throws FileNotFoundException, UnsupportedEncodingException {
-        String path = new String((Path.PATH_CERT + "k.crt"));
+        String path = new String((Path.PATH_CERT + "cert.crt"));
         File file = new File(path);
         InputStream targetStream = new FileInputStream(file);
         Certificate cert = getCert(targetStream);
-        String enc = Cryptography.encrypt(cert.getPublicKey(), "Элементарно, Ватсон", "RSA/ECB/PKCS1Padding");
+        String enc = Cryptography.encrypt(cert.getPublicKey(), "Ни разу не упасть — не самая большая заслуга в жизни. Главное каждый раз подниматься", "RSA/ECB/OAEPWithSHA-256AndMGF1Padding");
         System.out.println(enc);
     }
 
