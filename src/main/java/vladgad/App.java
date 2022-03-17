@@ -63,6 +63,9 @@ public class App implements Generator.CallBack, CheckAnswer.CallBack, Storage.Ca
     public void generate() {
         generator.generatetask();
     }
+    public void generateManyVariants(int size){
+        generator.generateManyVariant(size);
+    }
 
     public void checkAnswer(String taskId, String encrypt) {
 //        //получитить задачу и закрытый ключ
@@ -105,8 +108,11 @@ public class App implements Generator.CallBack, CheckAnswer.CallBack, Storage.Ca
                 callbackCheckAnswer.appCallbackCheckAnswer(callBackNotifications, obj);
                 break;
             }
+            default:{
+                callbackGenerate.appCallbackGenerate(callBackNotifications, obj);
+                break;
+            }
         }
-        callbackGenerate.appCallbackGenerate(callBackNotifications, obj);
     }
 
 

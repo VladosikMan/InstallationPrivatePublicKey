@@ -201,7 +201,12 @@ public class GenerationGUI implements App.CallbackGenerate {
             @Override
             public void actionPerformed(ActionEvent e) {
                 // запустить процедуру генерации задачи
-                app.generate();
+                if(queVariantsSlider.getValue() == 1){
+                    app.generate();
+                }else{
+                    app.generateManyVariants(queVariantsSlider.getValue());
+                }
+
             }
         });
         goCheckAnswerButton.addActionListener(new ActionListener() {
@@ -306,7 +311,7 @@ public class GenerationGUI implements App.CallbackGenerate {
         progressBar.setStringPainted(true);
         progressBar.setMinimum(0);
         progressBar.setMaximum(100);
-        progressBar.setValue(30);
+        progressBar.setValue(0);
 
     }
 
@@ -388,6 +393,15 @@ public class GenerationGUI implements App.CallbackGenerate {
             }
             case CreateCrtTask: {
                 crtTextArea.setText(obj.toString());
+                break;
+            }
+            case FinishManyVariants:{
+                System.out.println("Sgen");
+                progressBar.setValue(0);
+                break;
+            }
+            case UpdateGenerateVariants:{
+                progressBar.setValue((Integer) obj);
                 break;
             }
         }

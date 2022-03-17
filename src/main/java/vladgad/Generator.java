@@ -82,7 +82,8 @@ public class Generator implements Runnable {
         //name from file
         return names.get(0 + (int) (Math.random() * names.size()));
     }
-    private String createNameVariant(){
+
+    private String createNameVariant() {
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(Calendar.getInstance().getTime());
         return generateRandomIdString(5) + timeStamp;
     }
@@ -106,14 +107,80 @@ public class Generator implements Runnable {
     }
 
 
+    public void generateManyVariant(int size) {
+        int percent = 0;
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                String manyVariants = "Варианты " + size + "\n" + "\n";
+                for (int i = 1; i <= size; i++) {
+
+                    Task task = new Task();
+                    String name = createNameCert();
+                    String variant = createNameVariant();
+                    task.setName(variant);
+                    String id = createIdTask(name);
+                    task.setId(id);
+                    String data = createKeyData();
+                    task.setDataKey(data);
+                    String provider = createProvide();
+                    task.setProvider(provider);
+
+
+                    new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            storage.saveTask(task);
+                        }
+                    }).start();
+
+                    String crt = Cryptography.generatePair(task);
+                    new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            storage.saveVariant(task, crt);
+                        }
+                    }).start();
+
+                    manyVariants += ("Вариант - " + i + "\n" + "Идентификатор варианта " + task.getName() + "\n" +
+                            "Строка - " + task.getDataKey() + "\n" +
+                            "Провайдер - " + task.getProvider() + "\n" +
+                            "Сертификат - " + "\n" + crt + "\n" + "-----------------------------------------------------------");
+                    callBack.generatorCallBack(CallBackNotifications.UpdateGenerateVariants, Math.round((100 / size)*i));
+                    try {
+                        Thread.sleep(50);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+
+
+                String finalManyVariants = manyVariants;
+                callBack.generatorCallBack(CallBackNotifications.FinishManyVariants, null);
+                try {
+                    String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(Calendar.getInstance().getTime());
+                    String fpath = "Варианты - " + Integer.toString(size) + "_" + timeStamp + ".txt";
+
+                    storage.saveFile(fpath, manyVariants);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
+
+            }
+        }).start();
+
+
+    }
+
     @Override
     public void run() {
+
+
         Task task = new Task();
         String name = createNameCert();
-
         String variant = createNameVariant();
         task.setName(variant);
-
         callBack.generatorCallBack(CallBackNotifications.CreateNameTask, variant);
 
         String id = createIdTask(name);
@@ -133,7 +200,6 @@ public class Generator implements Runnable {
         storage.saveTask(task);
 
 
-
         String crt = Cryptography.generatePair(task);
 
         new Thread(new Runnable() {
@@ -143,6 +209,8 @@ public class Generator implements Runnable {
             }
         }).start();
         callBack.generatorCallBack(CallBackNotifications.CreateCrtTask, crt);
+
+
     }
 
     public void createQuestion() {

@@ -41,7 +41,7 @@ public class Storage implements Runnable {
         }
     }
 
-    private void saveFile(String fpath, String data) throws IOException {
+    public void saveFile(String fpath, String data) throws IOException {
         File file = new File(fpath);
         BufferedWriter writer = new BufferedWriter(new FileWriter(file, true));
         String[] words = data.split("\n");
