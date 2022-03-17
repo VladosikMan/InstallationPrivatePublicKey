@@ -222,7 +222,7 @@ public class GenerationGUI implements App.CallbackGenerate {
                     queVariantsField.setText(String.valueOf(queVariantsSlider.getValue()));
                 }catch (NumberFormatException exception) {
                     exception.printStackTrace();
-                    System.out.println("Error input");
+                    appCallbackGenerate(CallBackNotifications.ErrorInputQueVariants, null);
 
                 }
 
@@ -236,8 +236,8 @@ public class GenerationGUI implements App.CallbackGenerate {
                     queVariantsSlider.setValue(Integer.parseInt(queVariantsField.getText()));
                 }catch (NumberFormatException exception) {
                     exception.printStackTrace();
-                    System.out.println("Error input");
                     queVariantsField.setText(String.valueOf(queVariantsSlider.getValue()));
+                    appCallbackGenerate(CallBackNotifications.ErrorInputQueVariants, null);
                 }
             }
         });
@@ -319,6 +319,9 @@ public class GenerationGUI implements App.CallbackGenerate {
         textDataLabel.setText("");
         crtTextArea.setText("");
         textProviderLabel.setText("");
+        funcLabel.setText("");
+        queVariantsSlider.setValue(1);
+        queVariantsField.setText("1");
     }
 
     public GenerationGUI() {
@@ -388,7 +391,6 @@ public class GenerationGUI implements App.CallbackGenerate {
             }
             case FinishInitData: {
                 funcLabel.setText("Данные готовы");
-                System.out.println("Finish Init Data");
                 break;
             }
             case CreateCrtTask: {
@@ -396,12 +398,16 @@ public class GenerationGUI implements App.CallbackGenerate {
                 break;
             }
             case FinishManyVariants:{
-                System.out.println("Sgen");
+                funcLabel.setText("Задачи сгенерированы");
                 progressBar.setValue(0);
                 break;
             }
             case UpdateGenerateVariants:{
                 progressBar.setValue((Integer) obj);
+                break;
+            }
+            case ErrorInputQueVariants:{
+                funcLabel.setText("Ошибка ввода");
                 break;
             }
         }

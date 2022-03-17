@@ -16,5 +16,6 @@ public enum CallBackNotifications {
     DeleteVariant,
     FinishDeleteTask,
     FinishManyVariants,
-    UpdateGenerateVariants
+    UpdateGenerateVariants,
+    ErrorInputQueVariants
 }
